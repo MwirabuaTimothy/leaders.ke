@@ -126,29 +126,62 @@
 		{ id: 'contributors', label: 'Contributors' }
 	];
 
-	let amount = $state(500);
-	const presets = [200, 500, 1000, 5000];
+	let amount = $state(1000);
+	const presets = [100, 1000, 5000, 50000];
 </script>
 
 <svelte:head>
 	<title>Support the register · vote.ke</title>
 	<meta
 		name="description"
-		content="Nobody is paid to build vote.ke's civic register. Here is what it costs to run, what is donated, what has been raised, and what it was spent on."
+		content="vote.ke publishes who your leaders are and a dated record of what they say and do. It never rules on any of it. Here is what the register costs to run, and every shilling spent."
 	/>
 </svelte:head>
 
 <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12">
-	<header class="mb-8">
+	<header class="mb-8 max-w-3xl">
 		<h1 class="text-3xl font-bold text-heading">Fund the civic register</h1>
-		<p class="mt-3 max-w-3xl text-muted">
-			A public record of political violence, intimidation and how leaders behave in office.
-			A citizen texts a shortcode, we verify the number, tag the report to a ward and the
-			leader named, and publish it permanently. <strong class="text-heading">We never rule
-			that a report is true.</strong> We publish how many independent verified people said the
-			same thing.
+		<p class="mt-3 text-muted">
+			vote.ke does two things. It tells you <strong class="text-heading">who your leaders
+			are and what their job actually is</strong>, and it keeps a dated public record of
+			<strong class="text-heading">what they say and what happens around them</strong>.
+		</p>
+		<p class="mt-3 text-muted">
+			It does not tell you what to think of any of it. We do not rule that a report is
+			true, that a statement is hate speech, or that a leader is corrupt. Those are
+			findings for a court, for the NCIC, or for you. What we publish is the record and
+			the count: how many separate verified people reported the same thing, in the same
+			place, on the same day.
+		</p>
+		<p class="mt-3 text-sm text-muted">
+			That limit is the point. A record that never accuses anyone is one both sides can
+			cite, and one nobody can use as a weapon.
 		</p>
 	</header>
+
+	<!-- The honest split: what already runs, and what money would add. Kept above
+	the budget because a page asking for money should first say what exists. -->
+	<div class="mb-8 grid gap-4 sm:grid-cols-2">
+		<div class="rounded-2xl border border-border bg-surface p-5">
+			<p class="text-xs font-semibold tracking-wide text-muted uppercase">Running today, free</p>
+			<ul class="mt-3 space-y-2 text-sm text-muted">
+				<li><span class="font-medium text-heading">A page for every elective seat.</span> 1,100+ officeholders and candidates, sourced and published.</li>
+				<li><span class="font-medium text-heading">Guides to voting itself.</span> How to register, the six ballots you cast, how votes are counted, your rights on the day.</li>
+				<li><span class="font-medium text-heading">Daily press monitoring.</span> Coverage gathered per leader every morning and attached to their page.</li>
+				<li><span class="font-medium text-heading">Side-by-side comparison</span> of anyone contesting the same seat, plus a practice ballot.</li>
+			</ul>
+		</div>
+		<div class="rounded-2xl border border-border bg-surface-2 p-5">
+			<p class="text-xs font-semibold tracking-wide text-muted uppercase">What this money builds</p>
+			<ul class="mt-3 space-y-2 text-sm text-muted">
+				<li><span class="font-medium text-heading">Citizen reporting.</span> Text a shortcode. We check the number is real, work out the ward, attach it to the leader named, and publish it at a permanent address.</li>
+				<li><span class="font-medium text-heading">A count, not a verdict.</span> Each report shows how many separate verified numbers, across how many wards, said the same thing.</li>
+				<li><span class="font-medium text-heading">A county map</span> and a citable export, so a journalist, a petitioner or a court can quote a reference number.</li>
+				<li><span class="font-medium text-heading">Coordinators in ten counties,</span> because reports come from people, not from software.</li>
+			</ul>
+			<p class="mt-3 text-xs text-muted">None of this exists yet. That is what the budget below is for.</p>
+		</div>
+	</div>
 
 	<!-- Contribute, mobile placement: the sidebar stacks below the whole page on
 	small screens, which would bury the form several scrolls down. -->
@@ -166,10 +199,12 @@
 	<div class="grid gap-10 lg:grid-cols-10">
 		<!-- Main column -->
 		<div class="space-y-10 lg:col-span-7">
+
+			<h2 class="mt-2 text-xl font-bold text-heading">Who is behind this?</h2>
 			<p class="rounded-2xl border border-border bg-surface-2 p-4 text-sm">
-				<span class="font-semibold text-heading">Nobody is paid to build this.</span>
-				The engineering is volunteered. Contributions cover running costs only, and every
-				shilling out is listed below.
+				This is a neutral civic educational and electoral preparedness platform envisioned and voluntarily engineered by <a href="https://x.com/JusticeEngineer" class="text-primary hover:underline">@JusticeEngineer</a>.
+				The mission is to improve transparency in governance and to improve our readiness as a country for a free and fair 2027 general election.
+				Each contribution that opts to be made public is listed below. We welcome support from all who share our vision, including citizens, civil society, and the private sector. The register is not affiliated with any political party or candidate.
 			</p>
 
 			<section id="raised" class="scroll-mt-24 rounded-2xl border border-border bg-surface p-6">
@@ -248,8 +283,8 @@
 			<section id="ledger" class="scroll-mt-24">
 				<h2 class="text-xl font-bold text-heading">Where the money went</h2>
 				<p class="mt-1 text-sm text-muted">
-					Every payment out of this fund, as it happens. A register that asks for a public
-					record should keep one about itself.
+					Every payment out of this fund, as it happens. A project that asks leaders to keep
+					a public record has no business hiding its own.
 				</p>
 				{#if SPENT.length === 0}
 					<p class="mt-3 text-sm text-muted">Nothing spent yet.</p>
@@ -317,7 +352,7 @@
 						</p>
 					{:else}
 						<p class="mt-2 text-sm leading-relaxed text-muted">
-							Any amount. This funds the register, not a candidate or a party.
+							Any amount. This funds the register, not a candidate and not a party.
 						</p>
 						{#if form?.error}
 							<p class="mt-3 rounded-xl bg-danger-soft p-3 text-sm text-danger">{form.error}</p>
