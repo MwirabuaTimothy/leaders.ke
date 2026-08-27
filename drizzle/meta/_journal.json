@@ -799,6 +799,13 @@
       "when": 1787824042222,
       "tag": "0113_ambiguous_gorgon",
       "breakpoints": true
+    },
+    {
+      "idx": 114,
+      "version": "7",
+      "when": 1787825788865,
+      "tag": "0114_cynical_richard_fisk",
+      "breakpoints": true
     }
   ]
 }

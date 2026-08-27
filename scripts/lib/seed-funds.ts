@@ -18,7 +18,7 @@ import type { AnyDb } from './names';
 
 const SLUG = 'civic-register';
 
-type Line = { label: string; amountKes: number; note: string; isRecurring: boolean };
+type Line = { label: string; amountKes: number; note: string; isRecurring: boolean; isVolunteered?: boolean };
 
 const LINES: Line[] = [
 	{
@@ -71,6 +71,42 @@ const LINES: Line[] = [
 	}
 ];
 
+// Work given rather than bought. Printed on the page so the true cost of the
+// project is visible, and deliberately kept out of TARGET below. Together with
+// the cash lines these reconcile to the KES 2,975,000 in
+// docs/pivot-to-forum-register.md Part 2.
+const VOLUNTEERED: Line[] = [
+	{
+		label: 'Engineering, 7 weeks',
+		amountKes: 700_000,
+		note: 'Schema, web and SMS intake, number verification, photo upload, the corroboration counter, incident pages and the county map. 35 working days at a KES 20,000 Nairobi contract rate.',
+		isRecurring: false,
+		isVolunteered: true
+	},
+	{
+		label: 'News source vetting',
+		amountKes: 180_000,
+		note: 'A publisher allowlist, so the register can never repeat a fabricated story as though it were sourced. Nine days.',
+		isRecurring: false,
+		isVolunteered: true
+	},
+	{
+		label: 'County coordinator toolkit and 3-county pilot',
+		amountKes: 200_000,
+		note: 'Training material, a dry run, and the fixes the dry run finds.',
+		isRecurring: false,
+		isVolunteered: true
+	},
+	{
+		label: 'Maintenance and support, 12 months',
+		amountKes: 520_000,
+		note: 'Half a day a week for a year. Someone answers when a county coordinator cannot submit a report at 21:00.',
+		isRecurring: true,
+		isVolunteered: true
+	}
+];
+
+// The ask covers cash that actually leaves an account. Volunteered work is not in it.
 const TARGET = LINES.reduce((n, l) => n + l.amountKes, 0);
 
 export async function seedFunds(db: AnyDb) {
@@ -98,7 +134,7 @@ export async function seedFunds(db: AnyDb) {
 		.from(fundBudgetLines)
 		.where(and(eq(fundBudgetLines.fundId, fundId), isNull(fundBudgetLines.deletedAt)));
 	const seen = new Set(already.map((l) => l.label));
-	const fresh = LINES.filter((l) => !seen.has(l.label));
+	const fresh = [...LINES, ...VOLUNTEERED].filter((l) => !seen.has(l.label));
 
 	if (fresh.length) {
 		await db
@@ -107,6 +143,6 @@ export async function seedFunds(db: AnyDb) {
 	}
 
 	console.log(
-		`[funds] ${existing ? 'reused' : 'created'} "${SLUG}" (target KES ${TARGET.toLocaleString('en-KE')}), ${fresh.length} budget line(s) added`
+		`[funds] ${existing ? 'reused' : 'created'} "${SLUG}" (cash target KES ${TARGET.toLocaleString('en-KE')}, plus KES ${VOLUNTEERED.reduce((n, l) => n + l.amountKes, 0).toLocaleString('en-KE')} volunteered), ${fresh.length} budget line(s) added`
 	);
 }

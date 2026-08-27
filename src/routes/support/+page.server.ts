@@ -63,10 +63,17 @@ export const load: PageServerLoad = async () => {
 
 	const raisedKes = Number(raised?.total ?? 0);
 	const spentKes = expenses.reduce((n, e) => n + e.amountKes, 0);
+	// Split rather than filtered in SQL: both halves come off one ordered read,
+	// and the page prints them as two separate stories (what money buys, and what
+	// is given). Volunteered lines never count toward the target.
+	const cash = budget.filter((b) => !b.isVolunteered);
+	const volunteered = budget.filter((b) => b.isVolunteered);
 
 	return {
 		fund,
-		budget,
+		budget: cash,
+		volunteered,
+		volunteeredKes: volunteered.reduce((n, b) => n + b.amountKes, 0),
 		expenses,
 		raisedKes,
 		pendingKes: Number(pledged?.total ?? 0),

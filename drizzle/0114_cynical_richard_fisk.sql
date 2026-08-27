@@ -1,0 +1,1 @@
+ALTER TABLE "fund_budget_lines" ADD COLUMN "is_volunteered" boolean DEFAULT false NOT NULL;

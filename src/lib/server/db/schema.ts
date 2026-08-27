@@ -1555,6 +1555,11 @@ export const fundBudgetLines = pgTable('fund_budget_lines', {
   amountKes: integer('amount_kes').notNull(),
   note: text('note'), // why this line costs what it costs
   isRecurring: boolean('is_recurring').default(false).notNull(), // one-off vs monthly running cost
+  // Work given rather than bought. These lines are printed on the page so the
+  // real cost of the project is visible, but they are EXCLUDED from the fund's
+  // target: asking the public to pay for donated labour would make "nobody is
+  // paid to build this" false on the page that claims it.
+  isVolunteered: boolean('is_volunteered').default(false).notNull(),
   sortOrder: integer('sort_order').default(0).notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   deletedAt: timestamp('deleted_at', { withTimezone: true }),
