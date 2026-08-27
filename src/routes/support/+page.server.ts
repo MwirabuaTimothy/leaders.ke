@@ -1,14 +1,9 @@
 // The public funding page for the civic register.
 //
-// A transparency artefact first and a donate form second, and that order is the
-// point: a register that demands a public record has no business keeping its own
-// budget and spending private.
-//
-// Everything the page SAYS is static (src/lib/data/supportFund.ts): the budget,
-// the donated-labour lines, the ledger and the copy are authored content, so an
-// edit is a diff and a deploy rather than a database write nobody can review.
-// The only thing read from the database is what real people created: their
-// contributions.
+// This file does exactly two things: read the contributions people have made,
+// and take a new one. Everything the page SAYS (the copy, the budget rows, the
+// donated-work rows, the ledger) lives in +page.svelte next door, so editing the
+// page is editing the page, visible on save.
 //
 // Deliberately NOT /fundraising, which is the marketing page for the
 // candidate-facing feature. A citizen must never confuse funding this register
@@ -18,21 +13,15 @@ import { randomUUID } from 'node:crypto';
 import { and, desc, eq, isNull, sum } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { donations } from '$lib/server/db/schema';
-import {
-	CASH_LINES,
-	CASH_TARGET_KES,
-	EXPENSES,
-	PROJECT_TOTAL_KES,
-	SPENT_KES,
-	SUPPORT_FUND,
-	VOLUNTEERED_KES,
-	VOLUNTEERED_LINES
-} from '$lib/data/supportFund';
 import { chargeMobileMoney, normalizeMpesaPhone, paystackEnabled } from '$lib/server/paystack';
 import { enforceRateLimit, ipBucket } from '$lib/server/rateLimit';
 import type { Actions, PageServerLoad } from './$types';
 
-const forFund = eq(donations.fundSlug, SUPPORT_FUND.slug);
+/** Stamped on every contribution row, so they stay attributable if a second
+ * appeal is ever added. Changing it orphans existing donations. */
+const FUND_SLUG = 'civic-register';
+
+const forFund = eq(donations.fundSlug, FUND_SLUG);
 
 export const load: PageServerLoad = async () => {
 	const [[raised], [pledged], contributors] = await Promise.all([
@@ -54,20 +43,9 @@ export const load: PageServerLoad = async () => {
 			.limit(50)
 	]);
 
-	const raisedKes = Number(raised?.total ?? 0);
-
 	return {
-		fund: SUPPORT_FUND,
-		budget: CASH_LINES,
-		volunteered: VOLUNTEERED_LINES,
-		expenses: EXPENSES,
-		cashTotalKes: CASH_TARGET_KES,
-		volunteeredKes: VOLUNTEERED_KES,
-		projectTotalKes: PROJECT_TOTAL_KES,
-		raisedKes,
+		raisedKes: Number(raised?.total ?? 0),
 		pendingKes: Number(pledged?.total ?? 0),
-		spentKes: SPENT_KES,
-		balanceKes: raisedKes - SPENT_KES,
 		contributors,
 		mpesaLive: paystackEnabled()
 	};
@@ -99,7 +77,7 @@ export const actions: Actions = {
 		if (paystackEnabled() && mpesaPhone) {
 			const reference = `don_${randomUUID()}`;
 			await db.insert(donations).values({
-				fundSlug: SUPPORT_FUND.slug,
+				fundSlug: FUND_SLUG,
 				donorName,
 				phoneNumber: mpesaPhone,
 				amount: Math.round(amount),
@@ -128,7 +106,7 @@ export const actions: Actions = {
 		// No key or no usable number: a recorded pledge, confirmed by hand against
 		// the till statement, same as the campaign path.
 		await db.insert(donations).values({
-			fundSlug: SUPPORT_FUND.slug,
+			fundSlug: FUND_SLUG,
 			donorName,
 			phoneNumber: phone || null,
 			amount: Math.round(amount),
