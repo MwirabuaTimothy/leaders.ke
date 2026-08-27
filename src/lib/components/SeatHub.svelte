@@ -8,13 +8,23 @@
 	let { data }: { data: SeatHubData } = $props();
 
 	const fmt = new Intl.NumberFormat('en-KE');
+
+	// The three groups on this page are Current, this cycle's Candidates, and
+	// Former. The timeline below must not repeat whoever is already shown in the
+	// top card: on the active cycle that is the sitting holder, and on a past
+	// regime view it is that era's holder.
+	const formerTerms = $derived(
+		data.regime === data.cycle
+			? data.history.filter((t) => t.status !== 'current')
+			: data.history.filter((t) => t.startYear !== data.regime)
+	);
 </script>
 
 <svelte:head>
 	<title>{data.positionTitle}, {data.regionLabel} · vote.ke</title>
 	<meta
 		name="description"
-		content="{data.positionTitle} of {data.regionLabel}: the current, the {data.cycle} contestants and the seat's history."
+		content="{data.positionTitle} of {data.regionLabel}: who holds the seat now, who is running in {data.cycle}, and everyone who held it before."
 	/>
 </svelte:head>
 
@@ -65,7 +75,12 @@
 	<div class="mt-6 lg:mt-8 flex flex-col gap-4 lg:gap-4 lg:flex-row">
 		<div class="flex-1">
 			<!-- Past regimes show that era's holder, not today's current. -->
-			<h2 class="text-xl font-bold text-heading mb-4">{data.regime === data.cycle ? 'Current' : `${data.regime}`}</h2>
+			<h2 class="text-xl font-bold text-heading">{data.regime === data.cycle ? 'Current' : `${data.regime}`}</h2>
+			<p class="mt-1 mb-4 text-sm text-muted">
+				{data.regime === data.cycle
+					? 'Holding the seat today.'
+					: `Held the seat in the ${data.regime} term.`}
+			</p>
 			{#if data.current}
 				<!-- Stretched name link keeps the whole card clickable while the party
 				stays its own link on top. Nesting an <a> in an <a> is invalid HTML. -->
@@ -130,9 +145,10 @@
 	<div class="mt-6 lg:mt-8">
 		<div class="flex items-end justify-between gap-2">
 			<h2 class="text-xl font-bold text-heading">
-				{data.cycle} Candidates
+				{data.cycle} candidates
 			</h2>
 		</div>
+		<p class="mt-1 text-sm text-muted">Declared runs for this seat in the {data.cycle} election.</p>
 
 		{#if data.contestants.length > 0}
 			<div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -166,7 +182,7 @@
 	<!-- History: every recorded term for this seat, most recent first -->
 	<div class="mt-6 lg:mt-8">
 		<div class="flex justify-between items-center gap-2">
-			<h2 class="text-xl font-bold text-heading">History</h2>
+			<h2 class="text-xl font-bold text-heading">Former</h2>
 			{#if data.regime !== data.cycle}
 				<a
 					href="{data.basePath}/{data.cycle}"
@@ -176,11 +192,11 @@
 				</a>
 			{/if}
 		</div>
-		<p class="mt-1 text-sm text-muted">Every recorded term, most recent first.</p>
+		<p class="mt-1 text-sm text-muted">Everyone who has held this seat before, most recent first.</p>
 
-		{#if data.history.length > 0}
+		{#if formerTerms.length > 0}
 			<ol class="mt-6 space-y-0 border-l-2 border-border pl-6">
-				{#each data.history as term (term.path + term.startYear)}
+				{#each formerTerms as term (term.path + term.startYear)}
 					<!-- The dot highlights the regime on screen: today's current on the
 					active cycle, else the term the viewed year resolved to. -->
 					{@const inAction = data.regime === data.cycle ? term.status === 'current' : term.startYear === data.regime}
@@ -211,7 +227,7 @@
 			<div class="mt-6 lg:mt-8 rounded-2xl border border-dashed border-border p-8 text-center">
 				<p class="font-semibold text-heading">No historical record yet</p>
 				<p class="mx-auto mt-2 max-w-md text-sm text-muted">
-					Past officeholders for this seat are being seeded. The timeline fills as the register grows.
+					Past officeholders for this seat are being seeded. This fills as the register grows.
 				</p>
 			</div>
 		{/if}
