@@ -142,7 +142,7 @@
 	<header class="mb-8">
 		<h1 class="text-3xl font-bold text-heading">Support the civic register</h1>
 		
-		<p class="text-xl mt-4 italic">vote.ke keeps an dated, public and permanent record of who our leaders are every day.</p>
+		<p class="text-xl mt-4 italic">vote.ke keeps a dated, public and permanent record of who our leaders are every day.</p>
 
 		<p class="mt-3 text-lg text-muted">
 			We track what our leaders say and what they do, and we publish it here. The register is free to use, <strong>and it is free of opinion</strong>. 
@@ -165,7 +165,7 @@
 				<li><span class="font-medium text-heading">Voter guides.</span> <a href="/education">Resources</a> on why you should vote, how to register as a voter, how votes are counted, and your rights on the day of the election.</li>
 				<li><span class="font-medium text-heading">Ballot simulator.</span> <a href="/ballot">Our ballot simulator</a> shows the six ballots you will be required to cast for your ward.</li>
 				<li><span class="font-medium text-heading">Daily press monitoring.</span> Coverage gathered per leader every morning and attached to their page.</li>
-				<li><span class="font-medium text-heading">Side-by-side comparison</span> of anyone contesting the same seat, plus a practice ballot.</li>
+				<li><span class="font-medium text-heading">Side-by-side comparison</span> of anyone contesting the same seat.</li>
 			</ul>
 		</div>
 		<div class="rounded-2xl border border-border bg-surface-2 p-5">
