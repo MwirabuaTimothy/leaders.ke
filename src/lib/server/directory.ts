@@ -17,7 +17,6 @@ export type DirectoryFilters = {
 	// 'elected' = ever held the seat (current + former). 'candidate' = has a
 	// verified run this cycle, whether or not they also currently hold the seat
 	// (a sitting officeholder running for re-election shows up here too).
-	status: '' | 'elected' | 'candidate';
 	query: string;
 	/** Regime year: reslice the directory to who held the position that year
 	 * (term covering it); null = today's view (currents + aspirants preferred). */
@@ -170,7 +169,7 @@ export async function listPositionDirectory(positionTitle: string, f: DirectoryF
 	// to the terms COVERING that year, each person wearing that era's seat.
 	// Regime and 'candidate' don't combine. A candidacy is always this cycle,
 	// never a past regime, so the regime reslice only applies otherwise.
-	const eligible = f.regime && f.status !== 'candidate'
+	const eligible = f.regime
 		? rows.filter(
 				(r) =>
 					r.status !== 'aspirant' &&
@@ -189,11 +188,10 @@ export async function listPositionDirectory(positionTitle: string, f: DirectoryF
 					(r.status !== 'former' || (r.endAt?.getTime() ?? 0) > (existing.endAt?.getTime() ?? 0)));
 		if (better) bySlug.set(r.slug, r);
 	}
-	// 'candidate' status pulls from candidateBySlug (every 2027 run, current
-	// officeholders included); 'elected' and the default view both read the
-	// current/former-preferring dedupe above ('elected' additionally drops
-	// anyone whose only row is a bare candidacy, via the status filter below).
-	const people = f.status === 'candidate' ? [...candidateBySlug.values()] : [...bySlug.values()];
+	// One card per PERSON, from the current/former-preferring dedupe above. A
+	// bare candidacy (an aspirant with no held term) is in there too, so the
+	// three groups the page renders are all present in one list.
+	const people = [...bySlug.values()];
 	if (people.length === 0) {
 		return { total: 0, leaders: [] as DirectoryCard[], regionOptions: [] as string[], partyOptions: [] as string[], regimeOptions };
 	}
@@ -216,13 +214,12 @@ export async function listPositionDirectory(positionTitle: string, f: DirectoryF
 	const partyNameById = new Map(partyRows.map((r) => [r.id, r.name]));
 	const partyBy = new Map(people.map((p) => [p.userId, p.partyId ? (partyNameById.get(p.partyId) ?? null) : null]));
 
-	// Filter options come from the FULL position set (before filtering). The
-	// union of the elected dedupe and the candidate set, so switching the status
-	// pill never shrinks what the region/party dropdowns offer. Raw region
-	// labels, for MCA these are ward seat names; SearchFilter derives the
-	// constituency dropdown from them itself.
+	// Filter options come from the FULL position set (before filtering), the union
+	// of the deduped people and every 2027 run, so a region/party dropdown never
+	// offers less than the page can show. Raw region labels; for MCA these are
+	// ward seat names and SearchFilter derives the constituency dropdown itself.
 	const isMca = positionTitle === 'MCA';
-	const allPeople = f.status === 'candidate' ? [...bySlug.values(), ...candidateBySlug.values()] : [...people, ...candidateBySlug.values()];
+	const allPeople = [...people, ...candidateBySlug.values()];
 	const regionOptions = [...new Set(allPeople.map((p) => p.region))].sort();
 	const partyOptions = [...new Set(partyRows.map((r) => r.name))].sort();
 
@@ -230,10 +227,6 @@ export async function listPositionDirectory(positionTitle: string, f: DirectoryF
 	const filtered = people.filter((p) => {
 		if (f.region && (isMca ? CONSTITUENCY_BY_WARD.get(p.region) !== f.region : p.region !== f.region)) return false;
 		if (f.party && partyBy.get(p.userId) !== f.party) return false;
-		// 'candidate' needs no extra check: `people` is already candidateBySlug's
-		// rows (all tagged 'candidate') when this filter is active. 'elected' means
-		// ever held the seat, current or former, just not a bare candidacy.
-		if (f.status === 'elected' && p.status === 'aspirant') return false;
 		if (q && !fullName(p).toLowerCase().includes(q)) return false;
 		return true;
 	});

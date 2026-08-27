@@ -20,12 +20,10 @@ export const load: PageServerLoad = async ({ params, url, setHeaders }) => {
 	const positionTitle = positionRows[0].title;
 
 	// Directory filters ride the URL so pages are shareable and back/forward-safe.
-	const rawStatus = url.searchParams.get('status') ?? '';
 	const rawRegime = url.searchParams.get('regime') ?? '';
 	const filters = {
 		region: url.searchParams.get('region') ?? '',
 		party: url.searchParams.get('party') ?? '',
-		status: (rawStatus === 'elected' || rawStatus === 'candidate' ? rawStatus : '') as '' | 'elected' | 'candidate',
 		q: url.searchParams.get('q') ?? '',
 		// A 4-digit year reslices the directory to that regime's holders.
 		regime: /^\d{4}$/.test(rawRegime) ? Number(rawRegime) : null,
@@ -36,7 +34,6 @@ export const load: PageServerLoad = async ({ params, url, setHeaders }) => {
 		pageSize: PAGE_SIZE,
 		region: filters.region,
 		party: filters.party,
-		status: filters.status,
 		query: filters.q,
 		regime: filters.regime
 	});

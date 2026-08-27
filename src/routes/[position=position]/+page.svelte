@@ -20,12 +20,10 @@
 	// mirrors the loaded values; the effects below navigate when the user changes one.
 	let region = $state('');
 	let party = $state('');
-	let status = $state<'' | 'elected' | 'candidate'>('');
 	let query = $state('');
 	$effect(() => {
 		region = data.filters.region;
 		party = data.filters.party;
-		status = data.filters.status;
 		query = data.filters.q;
 	});
 
@@ -33,7 +31,6 @@
 		const params = new URLSearchParams();
 		if (region) params.set('region', region);
 		if (party) params.set('party', party);
-		if (status) params.set('status', status);
 		if (q.trim()) params.set('q', q.trim());
 		if (regime) params.set('regime', String(regime));
 		if (page > 1) params.set('page', String(page));
@@ -51,7 +48,7 @@
 
 	// Dropdown/toggle changes navigate immediately…
 	$effect(() => {
-		if (region === data.filters.region && party === data.filters.party && status === data.filters.status) return;
+		if (region === data.filters.region && party === data.filters.party) return;
 		goto(directoryUrl(1), { noScroll: true, keepFocus: true });
 	});
 	// …the name search debounces while typing.
@@ -65,7 +62,20 @@
 	function clearFilters() {
 		goto(`/${slug}`, { noScroll: true });
 	}
-	const hasFilters = $derived(!!(data.filters.region || data.filters.party || data.filters.status || data.filters.q));
+	// The same three groups the seat hub uses. listPositionDirectory already sorts
+	// current, then candidate, then former, so each group is a contiguous run of
+	// the page rather than a scatter across it.
+	const grouped = $derived(
+		[
+			{ status: 'current', title: 'Current', blurb: 'Holding the seat today.' },
+			{ status: 'candidate', title: `${data.cycle} candidates`, blurb: `Declared runs in the ${data.cycle} election.` },
+			{ status: 'former', title: 'Former', blurb: 'Held the seat before, most recent first.' }
+		]
+			.map((g) => ({ ...g, leaders: data.directory.leaders.filter((l) => l.status === g.status) }))
+			.filter((g) => g.leaders.length > 0)
+	);
+
+	const hasFilters = $derived(!!(data.filters.region || data.filters.party || data.filters.q));
 
 	// Warm the sibling positions in the background so pill hops land instantly.
 	$effect(() => {
@@ -126,7 +136,6 @@ server-paginated. On single-region seats (President) it sits below the hub. -->
 				parties={data.directory.partyOptions}
 				bind:region
 				bind:party
-				bind:status
 				{hasFilters}
 				onClear={clearFilters}
 			/>
@@ -141,36 +150,42 @@ server-paginated. On single-region seats (President) it sits below the hub. -->
 	</div>
 
 
-	<div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-		{#each data.directory.leaders as leader (leader.path)}
-			<LeaderCard
-				path={leader.path}
-				name={leader.name}
-				initials={leader.initials}
-				photoUrl={leader.photoUrl}
-				verified={leader.verified}
-				party={leader.party}
-				partyPath={leader.partyPath}
-				positionTitle={leader.positionTitle}
-				region={leader.countyLabel}
-				status={leader.status}
-				followers={leader.followers}
-			/>
-		{:else}
-			<div class="rounded-2xl border border-border bg-surface p-8 text-center sm:col-span-2 lg:col-span-3">
-				<p class="font-semibold text-heading">No leaders match those filters</p>
-				<p class="mt-2 text-sm text-muted">
-					Try clearing a filter, or claim this space for your own campaign.
-				</p>
-				<a
-					href="/onboard/profile"
-					class="mt-4 inline-block rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary transition hover:brightness-95"
-				>
-					Claim your profile
-				</a>
+	{#each grouped as group (group.status)}
+		<section class="mt-8 first:mt-4">
+			<h2 class="text-xl font-bold text-heading">{group.title}</h2>
+			<p class="mt-1 text-sm text-muted">{group.blurb}</p>
+			<div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+				{#each group.leaders as leader (leader.path)}
+					<LeaderCard
+						path={leader.path}
+						name={leader.name}
+						initials={leader.initials}
+						photoUrl={leader.photoUrl}
+						verified={leader.verified}
+						party={leader.party}
+						partyPath={leader.partyPath}
+						positionTitle={leader.positionTitle}
+						region={leader.countyLabel}
+						status={leader.status}
+						followers={leader.followers}
+					/>
+				{/each}
 			</div>
-		{/each}
-	</div>
+		</section>
+	{:else}
+		<div class="mt-4 rounded-2xl border border-border bg-surface p-8 text-center">
+			<p class="font-semibold text-heading">No leaders match those filters</p>
+			<p class="mt-2 text-sm text-muted">
+				Try clearing a filter, or claim this space for your own campaign.
+			</p>
+			<a
+				href="/onboard/profile"
+				class="mt-4 inline-block rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary transition hover:brightness-95"
+			>
+				Claim your profile
+			</a>
+		</div>
+	{/each}
 
 	<Pagination
 		page={data.filters.page}
