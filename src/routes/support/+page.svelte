@@ -121,7 +121,7 @@
 	const toc = [
 		{ id: 'raised', label: 'Where we are' },
 		{ id: 'costs', label: 'What it costs' },
-		{ id: 'given', label: 'What is donated' },
+		{ id: 'given', label: 'Volunteered' },
 		{ id: 'ledger', label: 'Where money went' },
 		{ id: 'contributors', label: 'Contributors' }
 	];
@@ -139,23 +139,19 @@
 </svelte:head>
 
 <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12">
-	<header class="mb-8 max-w-3xl">
-		<h1 class="text-3xl font-bold text-heading">Fund the civic register</h1>
-		<p class="mt-3 text-muted">
-			vote.ke does two things. It tells you <strong class="text-heading">who your leaders
-			are and what their job actually is</strong>, and it keeps a dated public record of
-			<strong class="text-heading">what they say and what happens around them</strong>.
+	<header class="mb-8">
+		<h1 class="text-3xl font-bold text-heading">Support the civic register</h1>
+		
+		<p class="text-xl mt-4 italic">vote.ke keeps an dated, public and permanent record of who our leaders are every day.</p>
+
+		<p class="mt-3 text-lg text-muted">
+			We track what our leaders say and what they do, and we publish it here. The register is free to use, <strong>and it is free of opinion</strong>. 
 		</p>
-		<p class="mt-3 text-muted">
-			It does not tell you what to think of any of it. We do not rule that a report is
-			true, that a statement is hate speech, or that a leader is corrupt. Those are
-			findings for a court, for the NCIC, or for you. What we publish is the record and
-			the count: how many separate verified people reported the same thing, in the same
+
+		<p class="mt-3 text-lg text-muted">
+			We do not rule that a report is true, that a statement is hate speech, or that a leader is corrupt. Those are
+			findings for a court or for the NCIC. We only publish the record and how many separate verified people reported the same thing, in the same
 			place, on the same day.
-		</p>
-		<p class="mt-3 text-sm text-muted">
-			That limit is the point. A record that never accuses anyone is one both sides can
-			cite, and one nobody can use as a weapon.
 		</p>
 	</header>
 
@@ -165,19 +161,20 @@
 		<div class="rounded-2xl border border-border bg-surface p-5">
 			<p class="text-xs font-semibold tracking-wide text-muted uppercase">Running today, free</p>
 			<ul class="mt-3 space-y-2 text-sm text-muted">
-				<li><span class="font-medium text-heading">A page for every elective seat.</span> 1,100+ officeholders and candidates, sourced and published.</li>
-				<li><span class="font-medium text-heading">Guides to voting itself.</span> How to register, the six ballots you cast, how votes are counted, your rights on the day.</li>
+				<li><span class="font-medium text-heading">All elective seats.</span> Pages for all elective seats and 1,100+ current, past and aspiring officeholders.</li>
+				<li><span class="font-medium text-heading">Voter guides.</span> <a href="/education">Resources</a> on why you should vote, how to register as a voter, how votes are counted, and your rights on the day of the election.</li>
+				<li><span class="font-medium text-heading">Ballot simulator.</span> <a href="/ballot">Our ballot simulator</a> shows the six ballots you will be required to cast for your ward.</li>
 				<li><span class="font-medium text-heading">Daily press monitoring.</span> Coverage gathered per leader every morning and attached to their page.</li>
 				<li><span class="font-medium text-heading">Side-by-side comparison</span> of anyone contesting the same seat, plus a practice ballot.</li>
 			</ul>
 		</div>
 		<div class="rounded-2xl border border-border bg-surface-2 p-5">
-			<p class="text-xs font-semibold tracking-wide text-muted uppercase">What this money builds</p>
+			<p class="text-xs font-semibold tracking-wide text-muted uppercase">What we plan to build</p>
 			<ul class="mt-3 space-y-2 text-sm text-muted">
 				<li><span class="font-medium text-heading">Citizen reporting.</span> Text a shortcode. We check the number is real, work out the ward, attach it to the leader named, and publish it at a permanent address.</li>
 				<li><span class="font-medium text-heading">A count, not a verdict.</span> Each report shows how many separate verified numbers, across how many wards, said the same thing.</li>
 				<li><span class="font-medium text-heading">A county map</span> and a citable export, so a journalist, a petitioner or a court can quote a reference number.</li>
-				<li><span class="font-medium text-heading">Coordinators in ten counties,</span> because reports come from people, not from software.</li>
+				<li><span class="font-medium text-heading">Coordinators in each county,</span> because reports come from people, not from software.</li>
 			</ul>
 			<p class="mt-3 text-xs text-muted">None of this exists yet. That is what the budget below is for.</p>
 		</div>
@@ -202,9 +199,9 @@
 
 			<h2 class="mt-2 text-xl font-bold text-heading">Who is behind this?</h2>
 			<p class="rounded-2xl border border-border bg-surface-2 p-4 text-sm">
-				This is a neutral civic educational and electoral preparedness platform envisioned and voluntarily engineered by <a href="https://x.com/JusticeEngineer" class="text-primary hover:underline">@JusticeEngineer</a>.
-				The mission is to improve transparency in governance and to improve our readiness as a country for a free and fair 2027 general election.
-				Each contribution that opts to be made public is listed below. We welcome support from all who share our vision, including citizens, civil society, and the private sector. The register is not affiliated with any political party or candidate.
+				This is a neutral civic educational and electoral preparedness platform voluntarily built by <a href="https://x.com/JusticeEngineer" class="text-primary hover:underline">@JusticeEngineer</a>.
+				It is not affiliated with any political party or candidate. The mission is to improve our readiness for a safe and fair general election for 2027 and beyond.
+				Each contribution is listed below by default, unless opted out. We welcome support from all who share our vision, including citizens, civil society, and the private sector. 
 			</p>
 
 			<section id="raised" class="scroll-mt-24 rounded-2xl border border-border bg-surface p-6">
@@ -254,7 +251,7 @@
 			</section>
 
 			<section id="given" class="scroll-mt-24 rounded-2xl border border-border bg-surface-2 p-6">
-				<h2 class="text-xl font-bold text-heading">What is donated, not billed</h2>
+				<h2 class="text-xl font-bold text-heading">Volunteered Work</h2>
 				<p class="mt-1 text-sm text-muted">
 					Work given to the project, priced at what it would cost to buy. You are not being
 					asked to pay for any of it. It is here so the true cost of the register is visible.
@@ -271,12 +268,7 @@
 					{/each}
 				</ul>
 				<p class="mt-4 border-t border-border pt-3 text-right text-sm font-semibold text-heading">
-					Donated {kes(donatedTotal)}
-				</p>
-				<p class="mt-3 text-sm text-muted">
-					Full cost of the register is {kes(projectTotal)}. Volunteered labour covers
-					{Math.round((donatedTotal / projectTotal) * 100)}% of it, so the public ask is
-					{kes(cashTotal)}.
+					Total volunteered: {kes(donatedTotal)}
 				</p>
 			</section>
 
