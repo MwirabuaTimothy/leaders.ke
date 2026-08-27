@@ -1152,11 +1152,14 @@ export const donationStatusEnum = pgEnum('donation_status', ['pending', 'confirm
 // One campaign-fundraising donation from a citizen, money belongs to the run.
 export const donations = pgTable('donations', {
   id: serial('id').primaryKey(),
-  // Exactly one of campaignId/fundId is set, never both, never neither (enforced
-  // in the donate actions, not by a DB constraint). campaignId is a candidate's
-  // run; fundId is a public project appeal such as the incident register.
+  // Exactly one of campaignId/fundSlug is set, never both, never neither
+  // (enforced in the donate actions, not by a DB constraint). campaignId is a
+  // candidate's run. fundSlug names a public project appeal whose budget, ledger
+  // and copy live in src/lib/data/supportFund.ts rather than in a table: that is
+  // authored content, not user data, so it belongs in the repo where an edit is
+  // a diff. A plain varchar, not a FK, because there is no row to point at.
   campaignId: integer('campaign_id').references(() => campaigns.id, { onDelete: 'cascade' }),
-  fundId: integer('fund_id').references(() => funds.id, { onDelete: 'cascade' }),
+  fundSlug: varchar('fund_slug', { length: 60 }),
   donorName: varchar('donor_name', { length: 100 }).notNull(),
   phoneNumber: varchar('phone_number', { length: 20 }),
   amount: integer('amount').notNull(), // KES
@@ -1168,7 +1171,7 @@ export const donations = pgTable('donations', {
   deletedAt: timestamp('deleted_at', { withTimezone: true }),
 }, (t) => [
   index('donations_campaign_idx').on(t.campaignId, t.status),
-  index('donations_fund_idx').on(t.fundId, t.status),
+  index('donations_fund_idx').on(t.fundSlug, t.status),
 ]);
 
 // 23. BALLOT SIMULATIONS (the homepage booth: a single simulated ballot event per citizen, not one row
@@ -1521,66 +1524,6 @@ export const rateEvents = pgTable('rate_events', {
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 }, (t) => [
   index('rate_events_action_bucket_idx').on(t.action, t.bucket, t.createdAt),
-]);
-
-// 25. PUBLIC FUNDS (an open, project-level appeal anyone can contribute to)
-// Deliberately separate from a candidate's campaign fundraising, which already
-// exists on `donations.campaignId`. A citizen must never confuse funding the
-// public register with funding a politician, so the two live on different routes
-// and read from different rows. A donation now belongs to exactly one of the
-// two: a campaign OR a fund (enforced in the actions, same convention as
-// deliveries' leaderId/experienceId pair, not a DB constraint).
-export const funds = pgTable('funds', {
-  id: serial('id').primaryKey(),
-  slug: varchar('slug', { length: 60 }).notNull().unique(), // the /support/[slug] segment
-  name: varchar('name', { length: 150 }).notNull(),
-  summary: text('summary').notNull(), // what the money builds, in the page's own words
-  // What the appeal is aiming at, in KES. The page shows raised against this.
-  targetKes: integer('target_kes').notNull(),
-  // Stated up front on the page, because a public appeal that has not said what
-  // happens when it over- or under-raises is a complaint waiting to be filed.
-  surplusPolicy: text('surplus_policy'),
-  isActive: boolean('is_active').default(true).notNull(),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-  deletedAt: timestamp('deleted_at', { withTimezone: true }),
-});
-
-// One published line of a fund's budget. A table rather than a config constant
-// because these are public claims that change as real quotes come back, and an
-// edit should not need a deploy.
-export const fundBudgetLines = pgTable('fund_budget_lines', {
-  id: serial('id').primaryKey(),
-  fundId: integer('fund_id').references(() => funds.id, { onDelete: 'cascade' }).notNull(),
-  label: varchar('label', { length: 150 }).notNull(),
-  amountKes: integer('amount_kes').notNull(),
-  note: text('note'), // why this line costs what it costs
-  isRecurring: boolean('is_recurring').default(false).notNull(), // one-off vs monthly running cost
-  // Work given rather than bought. These lines are printed on the page so the
-  // real cost of the project is visible, but they are EXCLUDED from the fund's
-  // target: asking the public to pay for donated labour would make "nobody is
-  // paid to build this" false on the page that claims it.
-  isVolunteered: boolean('is_volunteered').default(false).notNull(),
-  sortOrder: integer('sort_order').default(0).notNull(),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-  deletedAt: timestamp('deleted_at', { withTimezone: true }),
-}, (t) => [
-  index('fund_budget_lines_fund_idx').on(t.fundId, t.sortOrder),
-]);
-
-// One published expense. This is the ledger: a register that demands a public
-// record has no business keeping its own spending private, so every shilling
-// out gets a row here and the page prints them.
-export const fundExpenses = pgTable('fund_expenses', {
-  id: serial('id').primaryKey(),
-  fundId: integer('fund_id').references(() => funds.id, { onDelete: 'cascade' }).notNull(),
-  description: varchar('description', { length: 255 }).notNull(),
-  amountKes: integer('amount_kes').notNull(),
-  spentOn: date('spent_on').notNull(),
-  receiptUrl: text('receipt_url'), // optional proof, same storage as every other upload
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-  deletedAt: timestamp('deleted_at', { withTimezone: true }),
-}, (t) => [
-  index('fund_expenses_fund_idx').on(t.fundId, t.spentOn),
 ]);
 
 // Better-auth generated tables (run: bun run auth:schema)

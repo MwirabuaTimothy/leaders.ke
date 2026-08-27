@@ -1,84 +1,73 @@
-// The public funding page for a project fund (the incident register, today).
+// The public funding page for the civic register.
 //
 // A transparency artefact first and a donate form second, and that order is the
 // point: a register that demands a public record has no business keeping its own
-// budget and spending private. So the page prints the budget, what has been
-// raised, and every shilling out, before it asks for anything.
+// budget and spending private.
+//
+// Everything the page SAYS is static (src/lib/data/supportFund.ts): the budget,
+// the donated-labour lines, the ledger and the copy are authored content, so an
+// edit is a diff and a deploy rather than a database write nobody can review.
+// The only thing read from the database is what real people created: their
+// contributions.
 //
 // Deliberately NOT /fundraising, which is the marketing page for the
 // candidate-facing feature. A citizen must never confuse funding this register
 // with funding a politician.
-import { error, fail } from '@sveltejs/kit';
+import { fail } from '@sveltejs/kit';
 import { randomUUID } from 'node:crypto';
 import { and, desc, eq, isNull, sum } from 'drizzle-orm';
 import { db } from '$lib/server/db';
-import { donations, fundBudgetLines, fundExpenses, funds } from '$lib/server/db/schema';
+import { donations } from '$lib/server/db/schema';
+import {
+	CASH_LINES,
+	CASH_TARGET_KES,
+	EXPENSES,
+	PROJECT_TOTAL_KES,
+	SPENT_KES,
+	SUPPORT_FUND,
+	VOLUNTEERED_KES,
+	VOLUNTEERED_LINES
+} from '$lib/data/supportFund';
 import { chargeMobileMoney, normalizeMpesaPhone, paystackEnabled } from '$lib/server/paystack';
 import { enforceRateLimit, ipBucket } from '$lib/server/rateLimit';
 import type { Actions, PageServerLoad } from './$types';
 
-/** The one live fund. A slug column exists for a second one later, but a single
- * appeal needs no route parameter and no chooser. */
-async function activeFund() {
-	const [fund] = await db
-		.select()
-		.from(funds)
-		.where(and(eq(funds.isActive, true), isNull(funds.deletedAt)))
-		.limit(1);
-	return fund;
-}
+const forFund = eq(donations.fundSlug, SUPPORT_FUND.slug);
 
 export const load: PageServerLoad = async () => {
-	const fund = await activeFund();
-	if (!fund) throw error(404, 'No public fund is open right now.');
-
-	const [budget, expenses, [raised], [pledged], contributors] = await Promise.all([
-		db
-			.select()
-			.from(fundBudgetLines)
-			.where(and(eq(fundBudgetLines.fundId, fund.id), isNull(fundBudgetLines.deletedAt)))
-			.orderBy(fundBudgetLines.sortOrder),
-		db
-			.select()
-			.from(fundExpenses)
-			.where(and(eq(fundExpenses.fundId, fund.id), isNull(fundExpenses.deletedAt)))
-			.orderBy(desc(fundExpenses.spentOn)),
+	const [[raised], [pledged], contributors] = await Promise.all([
 		// Confirmed money only. A pending STK push is not income until the webhook says so.
 		db
 			.select({ total: sum(donations.amount) })
 			.from(donations)
-			.where(and(eq(donations.fundId, fund.id), eq(donations.status, 'confirmed'), isNull(donations.deletedAt))),
+			.where(and(forFund, eq(donations.status, 'confirmed'), isNull(donations.deletedAt))),
 		db
 			.select({ total: sum(donations.amount) })
 			.from(donations)
-			.where(and(eq(donations.fundId, fund.id), eq(donations.status, 'pending'), isNull(donations.deletedAt))),
+			.where(and(forFund, eq(donations.status, 'pending'), isNull(donations.deletedAt))),
 		// Only donors who consented appear by name; everyone else is counted, not listed.
 		db
 			.select({ donorName: donations.donorName, amount: donations.amount, at: donations.createdAt })
 			.from(donations)
-			.where(and(eq(donations.fundId, fund.id), eq(donations.status, 'confirmed'), eq(donations.isPublic, true), isNull(donations.deletedAt)))
+			.where(and(forFund, eq(donations.status, 'confirmed'), eq(donations.isPublic, true), isNull(donations.deletedAt)))
 			.orderBy(desc(donations.createdAt))
 			.limit(50)
 	]);
 
 	const raisedKes = Number(raised?.total ?? 0);
-	const spentKes = expenses.reduce((n, e) => n + e.amountKes, 0);
-	// Split rather than filtered in SQL: both halves come off one ordered read,
-	// and the page prints them as two separate stories (what money buys, and what
-	// is given). Volunteered lines never count toward the target.
-	const cash = budget.filter((b) => !b.isVolunteered);
-	const volunteered = budget.filter((b) => b.isVolunteered);
 
 	return {
-		fund,
-		budget: cash,
-		volunteered,
-		volunteeredKes: volunteered.reduce((n, b) => n + b.amountKes, 0),
-		expenses,
+		fund: SUPPORT_FUND,
+		budget: CASH_LINES,
+		volunteered: VOLUNTEERED_LINES,
+		expenses: EXPENSES,
+		cashTotalKes: CASH_TARGET_KES,
+		volunteeredKes: VOLUNTEERED_KES,
+		projectTotalKes: PROJECT_TOTAL_KES,
 		raisedKes,
 		pendingKes: Number(pledged?.total ?? 0),
-		spentKes,
-		balanceKes: raisedKes - spentKes,
+		spentKes: SPENT_KES,
+		balanceKes: raisedKes - SPENT_KES,
 		contributors,
 		mpesaLive: paystackEnabled()
 	};
@@ -86,9 +75,6 @@ export const load: PageServerLoad = async () => {
 
 export const actions: Actions = {
 	contribute: async (event) => {
-		const fund = await activeFund();
-		if (!fund) return fail(400, { error: 'No public fund is open right now.' });
-
 		const form = await event.request.formData();
 		const donorName = String(form.get('donorName') ?? '').trim();
 		const phone = String(form.get('phone') ?? '').replace(/[^\d+]/g, '');
@@ -108,12 +94,12 @@ export const actions: Actions = {
 
 		// The `don_` prefix matters: the shared Paystack webhook already confirms
 		// and fails donations by that reference (donationFulfill.ts), and it keys
-		// on the reference alone, so a fund donation is fulfilled by the same path
-		// a campaign donation is, with no change there.
+		// on the reference alone, so a fund contribution is fulfilled by the same
+		// path a campaign donation is, with no change there.
 		if (paystackEnabled() && mpesaPhone) {
 			const reference = `don_${randomUUID()}`;
 			await db.insert(donations).values({
-				fundId: fund.id,
+				fundSlug: SUPPORT_FUND.slug,
 				donorName,
 				phoneNumber: mpesaPhone,
 				amount: Math.round(amount),
@@ -142,7 +128,7 @@ export const actions: Actions = {
 		// No key or no usable number: a recorded pledge, confirmed by hand against
 		// the till statement, same as the campaign path.
 		await db.insert(donations).values({
-			fundId: fund.id,
+			fundSlug: SUPPORT_FUND.slug,
 			donorName,
 			phoneNumber: phone || null,
 			amount: Math.round(amount),

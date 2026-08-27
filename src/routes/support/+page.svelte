@@ -12,8 +12,6 @@
 		{ label: 'One-off', lines: data.budget.filter((b) => !b.isRecurring) },
 		{ label: 'Running costs', lines: data.budget.filter((b) => b.isRecurring) }
 	]);
-	const cashTotal = $derived(data.budget.reduce((n, b) => n + b.amountKes, 0));
-	const projectTotal = $derived(cashTotal + data.volunteeredKes);
 	// Capped so a fund that overshoots its target never renders a bar wider than its track.
 	const pct = $derived(Math.min(100, Math.round((data.raisedKes / data.fund.targetKes) * 100)));
 
@@ -96,7 +94,7 @@
 						{#if group.lines.length}
 							<h3 class="mt-5 text-xs font-semibold tracking-wide text-muted uppercase">{group.label}</h3>
 							<ul class="mt-2 divide-y divide-border">
-								{#each group.lines as line (line.id)}
+								{#each group.lines as line (line.label)}
 									<li class="flex flex-wrap justify-between gap-2 py-3 text-sm">
 										<span class="min-w-0 flex-1">
 											<span class="font-medium text-heading">{line.label}</span>
@@ -109,7 +107,7 @@
 						{/if}
 					{/each}
 					<p class="mt-4 border-t border-border pt-3 text-right text-sm font-semibold text-heading">
-						Cash needed {kes(cashTotal)}
+						Cash needed {kes(data.cashTotalKes)}
 					</p>
 				{/if}
 			</section>
@@ -124,7 +122,7 @@
 						asked to pay for any of it. It is here so the true cost of the register is visible.
 					</p>
 					<ul class="mt-3 divide-y divide-border">
-						{#each data.volunteered as line (line.id)}
+						{#each data.volunteered as line (line.label)}
 							<li class="flex flex-wrap justify-between gap-2 py-3 text-sm">
 								<span class="min-w-0 flex-1">
 									<span class="font-medium text-heading">{line.label}</span>
@@ -138,9 +136,9 @@
 						Donated {kes(data.volunteeredKes)}
 					</p>
 					<p class="mt-3 text-sm text-muted">
-						Full cost of the register is {kes(projectTotal)}. Volunteered labour covers
-						{Math.round((data.volunteeredKes / projectTotal) * 100)}% of it, so the public ask is
-						{kes(cashTotal)}.
+						Full cost of the register is {kes(data.projectTotalKes)}. Volunteered labour covers
+						{Math.round((data.volunteeredKes / data.projectTotalKes) * 100)}% of it, so the public ask is
+						{kes(data.cashTotalKes)}.
 					</p>
 				</section>
 			{/if}
@@ -155,7 +153,7 @@
 					<p class="mt-3 text-sm text-muted">Nothing spent yet.</p>
 				{:else}
 					<ul class="mt-3 divide-y divide-border">
-						{#each data.expenses as e (e.id)}
+						{#each data.expenses as e (e.description)}
 							<li class="flex flex-wrap justify-between gap-2 py-3 text-sm">
 								<span>
 									<span class="font-medium text-heading">{e.description}</span>
