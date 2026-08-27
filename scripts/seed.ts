@@ -62,6 +62,7 @@ import { seedNews } from './lib/seed-news';
 import { seedPlatformSettings } from './lib/seed-platform-settings';
 import { seedPackages } from './lib/seed-packages';
 import { seedAdminFixture } from './lib/seed-admin-fixture';
+import { seedFunds } from './lib/seed-funds';
 import { seedNotableKnowledge } from './lib/seed-notable-knowledge';
 import { seedNotableDeliveries } from './lib/seed-notable-deliveries';
 import { seedDemoLogins } from './lib/seed-demo-logins';
@@ -118,6 +119,7 @@ const { values } = parseArgs({
 		'platform-settings': { type: 'boolean', default: false },
 		packages: { type: 'boolean', default: false },
 		'admin-fixture': { type: 'boolean', default: false },
+		funds: { type: 'boolean', default: false },
 		'notable-knowledge': { type: 'boolean', default: false },
 		'notable-deliveries': { type: 'boolean', default: false },
 		'notable-profiles': { type: 'boolean', default: false },
@@ -174,6 +176,8 @@ if (runAll || values['platform-docs']) await seedPlatformDocs(db);
 if (runAll || values.issues) await seedIssues(db);
 if (runAll || values.news) await seedNews(db);
 if (runAll || values['admin-fixture']) await seedAdminFixture(db);
+// The public fund behind /support. No dependency: it references no other seeded row.
+if (runAll || values.funds) await seedFunds(db);
 // Depends on leaders/scraped/campaigns already having seeded these specific
 // profiles (looked up by slug) — runs last for that reason.
 if (runAll || values['notable-knowledge']) await seedNotableKnowledge(db);
