@@ -33,6 +33,7 @@ const STATIC_PATHS = [
 	'ballot',
 	'compare',
 	'demographics',
+	'support',
 	'about',
 	'alliances',
 	'dates',

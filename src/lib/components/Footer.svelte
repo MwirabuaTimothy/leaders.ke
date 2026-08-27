@@ -29,7 +29,7 @@
 			title: 'Explore',
 			links: [
 				{ href: '/presidents', label: 'Leaders' },
-				{ href: '/rank/presidents', label: 'Ranks' },
+				{ href: '/support', label: 'Support' },
 				{ href: '/compare', label: 'Compare' },
 				{ href: '/parties', label: 'Parties' },
 				{ href: '/', label: 'News' }
