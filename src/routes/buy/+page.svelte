@@ -34,6 +34,16 @@
 		}
 	];
 
+	// Kenya votes on the second Tuesday of August every five years. The asset does
+	// not expire with a cycle, it compounds across them, which is the argument the
+	// timeline below is making.
+	const cycles = [
+		{ y: '2027', n: 'General election', now: true },
+		{ y: '2032', n: 'General election', now: false },
+		{ y: '2037', n: 'General election', now: false },
+		{ y: '2042', n: 'General election', now: false }
+	];
+
 	const buyers = [
 		{
 			audience: 'For civic technology and accountability organisations',
@@ -138,8 +148,8 @@
 			</h1>
 			<p class="mt-5 text-lg leading-relaxed text-muted">
 				Kenya's civic data platform, the domain that names it, and the audience that already found
-				it. Built through 2026, populated, indexed, and available now rather than in the panic of
-				election year.
+				it. Populated, indexed, and built for every election season Kenya will ever hold, not just
+				the next one.
 			</p>
 			<div class="mt-7 flex flex-wrap items-center gap-4">
 				<a
@@ -238,14 +248,70 @@
 		</section>
 	{/each}
 
-	<!-- ── Timing ──────────────────────────────────────────────── -->
+	<!-- ── Perpetual value, then urgency ───────────────────────── -->
 	<section class="mt-16 rounded-2xl border border-border bg-surface-2 p-8 sm:p-10">
-		<div class="grid gap-8 lg:grid-cols-3">
-			<h2 class="text-2xl font-bold text-heading sm:text-3xl">Why now, and not in 2027</h2>
+		<h2 class="text-2xl font-bold text-heading sm:text-3xl lg:text-4xl">
+			This is not a 2027 asset. It is an every-election asset.
+		</h2>
+		<p class="mt-4 max-w-4xl text-lg leading-relaxed text-muted">
+			Kenya votes on the second Tuesday of August every five years, and by-elections run
+			continuously in between. A civic record does not expire with a cycle. It compounds across
+			them, and it is the only asset here that gets more valuable the longer it is held.
+		</p>
+
+		<!-- The cycle timeline -->
+		<div class="mt-8 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-4">
+			{#each cycles as c (c.y)}
+				<div class="bg-surface p-6 {c.now ? 'border-t-4 border-primary' : ''}">
+					<p class="text-3xl font-bold tracking-tight {c.now ? 'text-primary' : 'text-heading'}">
+						{c.y}
+					</p>
+					<p class="mt-1 text-sm text-muted">{c.n}</p>
+					{#if c.now}
+						<p class="mt-2 text-xs font-semibold tracking-wide text-primary uppercase">Next up</p>
+					{/if}
+				</div>
+			{/each}
+		</div>
+		<p class="mt-3 text-sm text-muted">
+			Plus by-elections, party primaries, boundary reviews and referenda in every year between.
+		</p>
+
+		<!-- Why it compounds -->
+		<div class="mt-9 grid gap-6 lg:grid-cols-3">
+			<div class="rounded-2xl border border-border bg-surface p-6">
+				<h3 class="text-lg font-semibold text-heading">The record deepens every cycle</h3>
+				<p class="mt-2.5 text-sm leading-relaxed text-muted">
+					1,478 leaders and 1,882 positions today. After 2027 that becomes a before-and-after on
+					every promise made. After 2032 it is two decades of who said what and what they
+					delivered. Nobody can start that archive in 2031 and catch up.
+				</p>
+			</div>
+			<div class="rounded-2xl border border-border bg-surface p-6">
+				<h3 class="text-lg font-semibold text-heading">It does not go quiet between votes</h3>
+				<p class="mt-2.5 text-sm leading-relaxed text-muted">
+					The news engine ingests and classifies mentions daily whether or not there is an
+					election. Governance is a five-year story, and the years between cycles are when
+					delivery records are actually written.
+				</p>
+			</div>
+			<div class="rounded-2xl border border-border bg-surface p-6">
+				<h3 class="text-lg font-semibold text-heading">The domain never dates</h3>
+				<p class="mt-2.5 text-sm leading-relaxed text-muted">
+					vote.ke does not carry a year, a party, a name or a slogan. It will read exactly as well
+					in 2042 as it does today, which is not true of a single campaign URL ever registered in
+					this country.
+				</p>
+			</div>
+		</div>
+
+		<!-- Urgency, reframed -->
+		<div class="mt-9 grid gap-6 border-t border-border pt-8 lg:grid-cols-3">
+			<h3 class="text-xl font-bold text-heading sm:text-2xl">So why buy now</h3>
 			<p class="text-base leading-relaxed text-muted">
-				This asset has a clock on it. Its value rises through the 2027 cycle and falls sharply the
-				week after the vote. Everyone who wants it will want it at the same time, and by then the
-				price reflects that.
+				Because the asset is permanent and the price is not. Demand for it spikes into every
+				election and everyone who wants it will want it at the same time. Buying between cycles is
+				the cheapest this will ever be.
 			</p>
 			<p class="text-lg leading-snug font-semibold text-heading">
 				Buying early buys the one thing an election cannot give you back: time to make it yours
