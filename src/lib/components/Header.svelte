@@ -64,6 +64,7 @@
 		{ href: '/compare', label: 'Compare' },
 		{ href: '/ballot', label: 'Ballot' },
 		{ href: '/education', label: 'Learn' },
+		{ href: '/buy', label: 'Buy' },
 	];
 
 	// Mobile nav: the desktop links (and the desktop switcher/bell) are hidden below
@@ -248,6 +249,7 @@
 						<a href="/compare" onclick={() => (menuOpen = false)} class={tileClass}>Compare</a>
 						<a href="/ballot" onclick={() => (menuOpen = false)} class={tileClass}>Ballot</a>
 						<a href="/education" onclick={() => (menuOpen = false)} class={tileClass}>Learn</a>
+						<a href="/buy" onclick={() => (menuOpen = false)} class={tileClass}>Buy</a>
 						<a href="/drives" onclick={() => (menuOpen = false)} class={tileClass}>Reg. Drives</a>
 						<a href="/dates" onclick={() => (menuOpen = false)} class={tileClass}>Key Dates</a>
 						<a href="/verify-registration" onclick={() => (menuOpen = false)} class={tileClass}>Verify</a>

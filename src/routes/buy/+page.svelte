@@ -41,7 +41,7 @@
 	/>
 </svelte:head>
 
-<div class="mx-auto max-w-5xl px-4 py-12 sm:px-6">
+<div class="mx-auto max-w-7xl px-4 py-12 sm:px-6">
 	<!-- ── Hero ────────────────────────────────────────────────── -->
 	<header class="border-b border-border pb-10">
 		<p class="text-xs font-semibold tracking-[0.2em] text-primary uppercase">Acquisition</p>
@@ -67,7 +67,7 @@
 	<!-- ── Numbers ─────────────────────────────────────────────── -->
 	<section class="mt-12">
 		<h2 class="text-xs font-semibold tracking-[0.18em] text-muted uppercase">What exists today</h2>
-		<dl class="mt-5 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-3">
+		<dl class="mt-5 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-3 lg:grid-cols-6">
 			{#each stats as s (s.l)}
 				<div class="bg-surface p-5">
 					<dt class="text-3xl font-bold tracking-tight text-heading">{s.n}</dt>
@@ -80,7 +80,7 @@
 	<!-- ── What you get ────────────────────────────────────────── -->
 	<section class="mt-14">
 		<h2 class="text-2xl font-bold text-heading">Four assets, sold together</h2>
-		<div class="mt-6 grid gap-5 sm:grid-cols-2">
+		<div class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
 			{#each included as i (i.t)}
 				<div class="rounded-xl border border-border bg-surface-2 p-6">
 					<h3 class="text-base font-semibold text-heading">{i.t}</h3>
@@ -93,11 +93,11 @@
 	<!-- ── Buyer 1: civic tech ─────────────────────────────────── -->
 	<section class="mt-16 border-t border-border pt-10">
 		<p class="text-xs font-semibold tracking-[0.18em] text-primary uppercase">For civic technology and accountability organisations</p>
-		<h2 class="mt-3 text-2xl font-bold text-heading">
+		<h2 class="mt-3 max-w-3xl text-2xl font-bold text-heading">
 			Skip the eighteen months you would otherwise spend building the boring half
 		</h2>
 
-		<div class="mt-5 space-y-4 text-sm leading-relaxed text-muted">
+		<div class="mt-5 max-w-3xl space-y-4 text-sm leading-relaxed text-muted">
 			<p>
 				Every accountability platform in this region dies the same way. A grant funds the build,
 				the build consumes the grant, and the data goes stale between cycles because nobody funds
@@ -140,11 +140,11 @@
 	<!-- ── Buyer 2: pollsters ──────────────────────────────────── -->
 	<section class="mt-16 border-t border-border pt-10">
 		<p class="text-xs font-semibold tracking-[0.18em] text-primary uppercase">For pollsters and research firms</p>
-		<h2 class="mt-3 text-2xl font-bold text-heading">
+		<h2 class="mt-3 max-w-3xl text-2xl font-bold text-heading">
 			A standing panel of politically engaged Kenyans, and a sentiment instrument nobody else has
 		</h2>
 
-		<div class="mt-5 space-y-4 text-sm leading-relaxed text-muted">
+		<div class="mt-5 max-w-3xl space-y-4 text-sm leading-relaxed text-muted">
 			<p>
 				Your two hardest costs are recruitment and reach. Online panels in Kenya are thin, phone
 				samples skew, and field work is expensive per respondent. Meanwhile the people you most
@@ -185,11 +185,11 @@
 	<!-- ── Buyer 3: aspirant ───────────────────────────────────── -->
 	<section class="mt-16 border-t border-border pt-10">
 		<p class="text-xs font-semibold tracking-[0.18em] text-primary uppercase">For an aspirant or a campaign</p>
-		<h2 class="mt-3 text-2xl font-bold text-heading">
+		<h2 class="mt-3 max-w-3xl text-2xl font-bold text-heading">
 			Own the place where voters go to check on you
 		</h2>
 
-		<div class="mt-5 space-y-4 text-sm leading-relaxed text-muted">
+		<div class="mt-5 max-w-3xl space-y-4 text-sm leading-relaxed text-muted">
 			<p>
 				Campaign websites are built in a hurry, live for eight months, and are forgotten the week
 				after the vote. They cost real money and reach the people who already support you. This is

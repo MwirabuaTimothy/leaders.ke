@@ -68,15 +68,6 @@
 				<div class="mt-4 max-w-xs text-center">
 					<Countdown />
 				</div>
-				<!-- Acquisition CTA, sitewide because it sits in the footer -->
-				<div class="mt-4 max-w-xs text-center">
-					<a
-						href="/for-sale"
-						class="inline-block rounded-full border border-primary px-5 py-2 text-sm font-semibold text-primary transition hover:bg-primary hover:text-on-primary"
-					>
-						Buy vote.ke
-					</a>
-				</div>
 			</div>
 
 			{#each groups as group (group.title)}
