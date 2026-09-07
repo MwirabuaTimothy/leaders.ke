@@ -58,12 +58,12 @@
 	// Nav is voters-first: leader/SaaS pages (features, pricing) live under
 	// /for-leaders and the footer instead of the top bar.
 	const links = [
-		{ href: '/', label: 'News' },
+		{ href: '/about', label: 'About' },
 		{ href: '/presidents', label: 'Leaders' },
-		{ href: '/compare', label: 'Compare' },
+		{ href: '/', label: 'News' },
 		{ href: '/ballot', label: 'Ballot' },
 		{ href: '/education', label: 'Learn' },
-		{ href: '/buy', label: 'Buy' },
+		{ href: '/buy', label: 'Buy' }
 	];
 
 	// Mobile nav: the desktop links (and the desktop switcher/bell) are hidden below
@@ -242,12 +242,13 @@
 							<a href="/dashboard/notifications" onclick={() => (menuOpen = false)} class={tileClass}>Notifications</a>
 							<a href="/dashboard/account" onclick={() => (menuOpen = false)} class={tileClass}>Account</a>
 						{/if}
-						<a href="/" onclick={() => (menuOpen = false)} class={tileClass}>News</a>
+						<a href="/about" onclick={() => (menuOpen = false)} class={tileClass}>About</a>
 						<a href="/presidents" onclick={() => (menuOpen = false)} class={tileClass}>Leaders</a>
-						<a href="/compare" onclick={() => (menuOpen = false)} class={tileClass}>Compare</a>
+						<a href="/" onclick={() => (menuOpen = false)} class={tileClass}>News</a>
 						<a href="/ballot" onclick={() => (menuOpen = false)} class={tileClass}>Ballot</a>
 						<a href="/education" onclick={() => (menuOpen = false)} class={tileClass}>Learn</a>
 						<a href="/buy" onclick={() => (menuOpen = false)} class={tileClass}>Buy</a>
+						<a href="/compare" onclick={() => (menuOpen = false)} class={tileClass}>Compare</a>
 						<a href="/drives" onclick={() => (menuOpen = false)} class={tileClass}>Reg. Drives</a>
 						<a href="/dates" onclick={() => (menuOpen = false)} class={tileClass}>Key Dates</a>
 						<a href="/verify-registration" onclick={() => (menuOpen = false)} class={tileClass}>Verify</a>
