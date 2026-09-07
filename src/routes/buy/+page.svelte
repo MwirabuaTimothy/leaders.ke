@@ -17,8 +17,8 @@
 
 	const included = [
 		{
-			t: 'The domain',
-			d: 'vote.ke. Two syllables, exact match, no explanation needed on a poster, a radio ad or a ballot. There is no second one of these.'
+			t: 'The brand',
+			d: 'The clean vote.ke domain and all rights to the brand. Two syllables, exact match, no explanation needed on a cap, a t-shirt, a poster, a billboard or a radio ad. There is no second one of these.'
 		},
 		{
 			t: 'The database',
@@ -43,6 +43,80 @@
 		{ y: '2037', n: 'General election', now: false },
 		{ y: '2042', n: 'General election', now: false }
 	];
+
+	// What the next owner unlocks. Each of these is cheap here and expensive from
+	// scratch, because the geography, the seat structure and the traffic already
+	// exist. Framed as headroom, not as roadmap promises.
+	const superpowers = [
+		{
+			t: 'USSD and SMS access',
+			d: 'Most Kenyan voters are not on a smartphone. Every leader and seat is already keyed to a ward, so a shortcode turns this into the only civic register reachable from a feature phone.'
+		},
+		{
+			t: 'Election-night results',
+			d: 'The seat structure for all six elective levels is already modelled. Plug a results feed into it and vote.ke becomes the live results destination, on the domain people would guess first.'
+		},
+		{
+			t: 'Ward-level sentiment tracking',
+			d: 'The news engine already classifies every mention by tone. Surfacing it as a live county and ward dashboard is a view over data that is already being collected daily.'
+		},
+		{
+			t: 'Promise-to-delivery scoring',
+			d: 'Manifestos in, delivery tracker already built. Score what was promised against what the record shows was done, per leader, per cycle, automatically.'
+		},
+		{
+			t: 'Swahili and vernacular',
+			d: 'The content layer is structured rather than hand-written, so reaching a far larger share of the electorate is a translation problem and not a rebuild.'
+		},
+		{
+			t: 'A newsroom API',
+			d: '3,216 pages of structured civic data that every media house in the country rebuilds from scratch each cycle. Licensing it is a second revenue line that costs nothing to serve.'
+		}
+	];
+
+	// Three numbers, in order: what it cost to build, what it can earn in one
+	// cycle, and the ask sitting between them. Every figure below is one
+	// multiplication a skimmer can redo in their head.
+	const built = [
+		{ m: 'Civic data model and geography', d: '47 counties down to ward, all six elective levels, 1,882 positions' },
+		{ m: 'Leader profiles and track records', d: '1,478 profiles with experience, delivery tracking and verification' },
+		{ m: 'News ingestion and AI classification', d: 'Daily crawl across 1,163 leaders, sentiment classified, 5,185 articles' },
+		{ m: 'Ballot simulator and comparison', d: 'Six ballots per ward, shareable, side-by-side candidate view' },
+		{ m: 'Campaign dashboard', d: 'Followers, broadcasts, pledges, reviews, ambassadors, press desk' },
+		{ m: 'Payments and ledger', d: 'M-Pesa STK push, Paystack, credit wallets, double-entry accounting' },
+		{ m: 'SMS, OTP and notifications', d: "Africa's Talking, number verification, ward-targeted delivery" },
+		{ m: 'Voter education and party data', d: '131 parties, alliances, registration drives, key dates, demographics' },
+		{ m: 'Programmatic SEO', d: '3,216 pages generated and indexed, sitemap, structured metadata' },
+		{ m: 'Data assembly and verification', d: '36 import and backfill scripts; every profile, seat and party checked' },
+		{ m: 'Design system and mobile layouts', d: 'Tokens, components, responsive down to 375px, accessibility pass' }
+	];
+
+	// Build cost, kept to one multiplication anyone can redo:
+	// 60 days x 8 hours x 3 disciplines x KES 10,000.
+	const DAYS = 60;
+	const HOURS_PER_DAY = 8;
+	const DISCIPLINES = 3;
+	const RATE = 10_000;
+	const buildTotal = DAYS * HOURS_PER_DAY * DISCIPLINES * RATE;
+
+	// Rate card live on /pricing. The blended figure is derived from this table
+	// rather than asserted, so the page and the maths can never drift apart.
+	const tiers = [
+		{ name: 'Kickstart', price: 2_500, share: 0.75 },
+		{ name: 'Mobilize', price: 12_500, share: 0.2 },
+		{ name: 'Dominate', price: 50_000, share: 0.05 }
+	];
+	const ARPU = tiers.reduce((a, t) => a + t.price * t.share, 0);
+	const cases = [
+		{ c: 'Bear', subs: 500, pct: '2%', note: 'The motion stalls early' },
+		{ c: 'Base', subs: 1_250, pct: '5%', note: 'Steady founder-led selling' },
+		{ c: 'Bull', subs: 2_500, pct: '10%', note: 'One party signs in bulk' }
+	];
+	const cycle = (subs: number) => subs * ARPU * 12;
+	const ASK = Math.round(cycle(500) * 0.75);
+	const HEADROOM = cycle(500) - ASK;
+	const USD = Math.round(ASK / 130 / 1000) * 1000;
+	const kes = (n: number) => n.toLocaleString('en-KE');
 
 	const buyers = [
 		{
@@ -251,7 +325,7 @@
 	<!-- ── Perpetual value, then urgency ───────────────────────── -->
 	<section class="mt-16 rounded-2xl border border-border bg-surface-2 p-8 sm:p-10">
 		<h2 class="text-2xl font-bold text-heading sm:text-3xl lg:text-4xl">
-			This is not a 2027 asset. It is an every-election asset.
+			This is not a 2027-only asset. It is an every-election asset.
 		</h2>
 		<p class="mt-4 max-w-4xl text-lg leading-relaxed text-muted">
 			Kenya votes on the second Tuesday of August every five years, and by-elections run
@@ -283,7 +357,7 @@
 				<h3 class="text-lg font-semibold text-heading">The record deepens every cycle</h3>
 				<p class="mt-2.5 text-sm leading-relaxed text-muted">
 					1,478 leaders and 1,882 positions today. After 2027 that becomes a before-and-after on
-					every promise made. After 2032 it is two decades of who said what and what they
+					every promise made. After 2032 it is two full cycles of who said what and what they
 					delivered. Nobody can start that archive in 2031 and catch up.
 				</p>
 			</div>
@@ -317,6 +391,238 @@
 				Buying early buys the one thing an election cannot give you back: time to make it yours
 				before it matters.
 			</p>
+		</div>
+	</section>
+
+	<!-- ── Headroom ────────────────────────────────────────────── -->
+	<section class="mt-16 border-t border-border pt-10">
+		<h2 class="text-2xl font-bold text-heading sm:text-3xl lg:text-4xl">
+			What the next owner can unlock
+		</h2>
+		<p class="mt-3 max-w-4xl text-lg leading-relaxed text-muted">
+			None of these is built. All of them are cheap from here and expensive from scratch, because
+			the geography, the seat structure, the daily ingestion and the audience already exist. This is
+			the headroom you are buying, not a roadmap we are promising.
+		</p>
+		<div class="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+			{#each superpowers as sp (sp.t)}
+				<div class="flex flex-col rounded-2xl border border-border bg-surface p-6">
+					<h3 class="text-base font-bold text-heading">{sp.t}</h3>
+					<p class="mt-2 text-sm leading-relaxed text-muted">{sp.d}</p>
+				</div>
+			{/each}
+		</div>
+	</section>
+
+	<!-- ── 1. What it cost ─────────────────────────────────────── -->
+	<section class="mt-16 border-t border-border pt-10">
+		<h2 class="text-2xl font-bold text-heading sm:text-3xl lg:text-4xl">What it cost to build</h2>
+		<p class="mt-3 max-w-4xl text-lg leading-relaxed text-muted">
+			429 commits between 4 July and 7 September 2026, across 1,402 files, running in production.
+			Here is everything that shipped.
+		</p>
+
+		<div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+			{#each built as b (b.m)}
+				<div class="flex flex-col rounded-2xl border border-border bg-surface p-5">
+					<h3 class="text-sm font-bold text-heading">{b.m}</h3>
+					<p class="mt-1.5 text-sm leading-relaxed text-muted">{b.d}</p>
+				</div>
+			{/each}
+		</div>
+
+		<!-- One multiplication, checkable in your head -->
+		<div class="mt-8 rounded-2xl border border-border bg-surface-2 p-8">
+			<div class="grid gap-8 lg:grid-cols-3">
+				<div class="lg:col-span-2">
+					<h3 class="text-xl font-bold text-heading sm:text-2xl">The maths, in one line</h3>
+					<p class="mt-3 text-base leading-relaxed text-muted">
+						It took over <strong class="font-semibold text-heading">60 days</strong> of design,
+						engineering and project management, each taking over
+						<strong class="font-semibold text-heading">8 hours a day</strong>, charged at
+						<strong class="font-semibold text-heading">KES 10,000 an hour</strong> to develop vote.ke. 
+					</p>
+					<div class="mt-5 flex flex-wrap items-center gap-x-3 gap-y-2 text-lg font-semibold text-heading">
+						<span>{DAYS} days</span>
+						<span class="text-muted">x</span>
+						<span>{HOURS_PER_DAY} hours</span>
+						<span class="text-muted">x</span>
+						<span>{DISCIPLINES} disciplines</span>
+						<span class="text-muted">x</span>
+						<span>KES {kes(RATE)}</span>
+					</div>
+					<p class="mt-4 text-sm leading-relaxed text-muted">
+						<a
+							href="https://linkedin.com/in/MwirabuaTim"
+							target="_blank"
+							rel="noopener noreferrer"
+							class="font-semibold text-primary hover:underline">The architect</a
+						> has been delivering software for over 14 years. He previously worked at Microsoft as a
+						Senior Software Engineer, shipping to hundreds of millions of users across more than 50
+						Microsoft products.
+					</p>
+					<p class="mt-3 text-sm leading-relaxed text-muted">
+						The same engineering practices went into vote.ke, and they continue under the
+						twelve-month maintenance contract included in the sale.
+					</p>
+				</div>
+
+				<div class="flex flex-col justify-center rounded-2xl border-2 border-primary bg-surface p-6 text-center">
+					<p class="text-xs font-semibold tracking-[0.18em] text-muted uppercase">Cost of the build</p>
+					<p class="mt-2 text-3xl font-bold tracking-tight text-heading lg:text-4xl">
+						KES {kes(buildTotal)}
+					</p>
+					<p class="mt-3 text-xs leading-relaxed text-muted">
+						Excludes AI inference and deployment costs, which are paid separately and continue
+						monthly.
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- ── 2. What it can earn ─────────────────────────────────── -->
+	<section class="mt-16 border-t border-border pt-10">
+		<h2 class="text-2xl font-bold text-heading sm:text-3xl lg:text-4xl">
+			What it can earn in one election cycle
+		</h2>
+
+		<div class="mt-5 grid gap-6 lg:grid-cols-3">
+			<div class="space-y-4 text-base leading-relaxed text-muted lg:col-span-2">
+				<p>
+					Kenya cleared roughly 16,000 candidates in 2022. Before party nominations thin the field,
+					the pool of aspirants runs closer to 25,000. Every one of them has a budget, a deadline
+					and no software.
+				</p>
+				<p>
+					Our rate card is live on <a href="/pricing" class="text-primary hover:underline">the pricing page</a>. Weighted the
+					way the 2022 candidate spread implies:
+				</p>
+
+				<table class="w-full border-collapse text-left text-sm">
+					<thead>
+						<tr class="border-b border-border">
+							<th class="pb-2 pr-4 text-xs font-semibold tracking-wide text-muted uppercase">Tier</th>
+							<th class="pb-2 pr-4 text-right text-xs font-semibold tracking-wide text-muted uppercase">Per month</th>
+							<th class="pb-2 pr-4 text-right text-xs font-semibold tracking-wide text-muted uppercase">Share</th>
+							<th class="pb-2 text-right text-xs font-semibold tracking-wide text-muted uppercase">Contributes</th>
+						</tr>
+					</thead>
+					<tbody>
+						{#each tiers as t (t.name)}
+							<tr class="border-b border-border/60">
+								<td class="py-2 pr-4 font-semibold text-heading">{t.name}</td>
+								<td class="py-2 pr-4 text-right tabular-nums text-heading">{kes(t.price)}</td>
+								<td class="py-2 pr-4 text-right tabular-nums text-muted">{t.share * 100}%</td>
+								<td class="py-2 text-right tabular-nums text-heading">{kes(t.price * t.share)}</td>
+							</tr>
+						{/each}
+						<tr>
+							<td class="pt-3 pr-4 font-bold text-heading">Blended</td>
+							<td class="pt-3 pr-4"></td>
+							<td class="pt-3 pr-4"></td>
+							<td class="pt-3 text-right text-base font-bold tabular-nums text-primary">
+								{kes(ARPU)}
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<p class="mt-4 text-sm leading-relaxed">
+					<a href="https://en.wikipedia.org/wiki/2022_Kenyan_general_election" class="text-primary hover:underline" target="_blank">16,000</a> candidates were cleared in 2022. Pre-nomination aspirant counts run 1.5-2x cleared numbers, so the 2027 addressable pool is ~25,000-30,000.
+					The only thing that varies is how many aspirants pay, which is <span class="font-bold text-heading">a question of how hard you sell.</span>
+				</p>
+			</div>
+
+			<aside class="flex flex-col justify-center items-center text-center rounded-2xl border-l-4 border-primary bg-surface-2 px-6 py-7">
+				<p class="text-xs font-semibold tracking-[0.18em] text-muted uppercase">Minimum projected revenue</p>
+				<p class="mt-3 text-3xl font-bold tracking-tight text-heading lg:text-4xl">
+					KES {kes(cycle(500))} 
+				</p>
+				<span class="mt-2 text-xs text-muted">(For 2027 cycle)</span>
+				<p class="mt-4 text-sm leading-relaxed text-muted">
+					You need only 500 aspirants on the blended price of KES 6,875 a month, for twelve months.
+					500 out of 25,000. That is one in fifty.
+				</p>
+			</aside>
+		</div>
+
+		<div class="mt-7 overflow-x-auto">
+			<table class="w-full min-w-[40rem] border-collapse text-left text-sm">
+				<thead>
+					<tr class="border-b-2 border-border">
+						<th class="pb-3 pr-4 text-xs font-semibold tracking-wide text-muted uppercase">Case</th>
+						<th class="pb-3 pr-4 text-xs font-semibold tracking-wide text-muted uppercase">The pool</th>
+						<th class="pb-3 pr-4 text-xs font-semibold tracking-wide text-muted uppercase">Convert</th>
+						<th class="pb-3 pr-4 text-xs font-semibold tracking-wide text-muted uppercase">Subscriptions</th>
+						<th class="pb-3 pr-4 text-xs font-semibold tracking-wide text-muted uppercase">Months</th>
+						<th class="pb-3 pr-4 text-xs font-semibold tracking-wide text-muted uppercase">Blended</th>
+						<th class="pb-3 text-right text-xs font-semibold tracking-wide text-muted uppercase">2027 Cycle revenue</th>
+					</tr>
+				</thead>
+				<tbody>
+					{#each cases as c (c.c)}
+						<tr class="border-b border-border/60 {c.c === 'Bear' ? 'bg-surface-2' : ''}">
+							<td class="py-3 pr-4 font-bold {c.c === 'Bear' ? 'text-primary' : 'text-heading'}">{c.c}</td>
+							<td class="py-3 pr-4 tabular-nums text-muted">25,000</td>
+							<td class="py-3 pr-4 tabular-nums text-heading">{c.pct}</td>
+							<td class="py-3 pr-4 tabular-nums text-heading">{kes(c.subs)} </td>
+							<td class="py-3 pr-4 tabular-nums text-muted">12</td>
+							<td class="py-3 pr-4 tabular-nums text-muted">6,875 x {kes(c.subs)} x 12</td>
+							<td class="py-3 text-right text-base font-bold tabular-nums whitespace-nowrap {c.c === 'Bear' ? 'text-primary' : 'text-heading'}">
+								{kes(cycle(c.subs))}
+							</td>
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+		</div>
+
+		<p class="mt-5 max-w-5xl text-sm leading-relaxed text-muted">
+			This counts subscriptions only. In addition to that you will earn from broadcast credits, the 5 percent fundraising fee and setup services. 
+		</p>
+	</section>
+
+	<!-- ── 3. The ask ──────────────────────────────────────────── -->
+	<section class="mt-16 rounded-2xl border-2 border-primary bg-surface-2 p-8 sm:p-10">
+		<div class="grid gap-8 lg:grid-cols-3">
+			<div>
+				<p class="text-sm font-semibold tracking-[0.18em] text-primary uppercase">The Price</p>
+				<p class="mt-3 text-4xl font-bold tracking-tight text-heading lg:text-5xl">
+					KES {kes(ASK)}
+				</p>
+				<p class="mt-1 text-sm text-muted">Approximately USD {kes(USD)}</p>
+				<p class="mt-4 text-base leading-relaxed text-heading">
+					Everything on this page, plus twelve months of maintenance and support.
+				</p>
+			</div>
+
+			<div class="lg:col-span-2">
+				<h3 class="text-xs font-semibold tracking-[0.18em] text-muted uppercase">How that number was reached</h3>
+				<ol class="mt-4 space-y-3">
+					<li class="flex gap-4 text-sm leading-relaxed text-muted">
+						<span class="shrink-0 font-bold text-primary">1</span>
+						<span>
+							<strong class="font-semibold text-heading">Start with the bear case.</strong> 
+							The minimum revenue projected for the 2027 cycle is KES {kes(cycle(500))}.
+						</span>
+					</li>
+					<li class="flex gap-4 text-sm leading-relaxed text-muted">
+						<span class="shrink-0 font-bold text-primary">2</span>
+						<span>
+							<strong class="font-semibold text-heading">Take 75 percent of it.</strong>
+							Pay only 75 percent of the minimum you could get back. {kes(cycle(500))} x 0.75 = {kes(ASK)}. In the worst case, you could earn a <strong class="font-semibold text-heading">profit of KES {kes(HEADROOM)}</strong>
+						</span>
+					</li>
+					<li class="flex gap-4 text-sm leading-relaxed text-muted">
+						<span class="shrink-0 font-bold text-primary">4</span>
+						<span>
+							<strong class="font-semibold text-heading">Consider the future potential.</strong>
+							You will continue to earn from vote.ke in <strong class="font-semibold text-heading">2032, 2037, 2042 and beyond.</strong>
+							The record gets deeper and the brand grows with every election cycle.
+						</span>
+					</li>
+				</ol>
+			</div>
 		</div>
 	</section>
 

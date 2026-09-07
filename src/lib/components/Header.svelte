@@ -60,7 +60,6 @@
 	const links = [
 		{ href: '/', label: 'News' },
 		{ href: '/presidents', label: 'Leaders' },
-		{ href: '/support', label: 'Support' },
 		{ href: '/compare', label: 'Compare' },
 		{ href: '/ballot', label: 'Ballot' },
 		{ href: '/education', label: 'Learn' },
@@ -245,7 +244,6 @@
 						{/if}
 						<a href="/" onclick={() => (menuOpen = false)} class={tileClass}>News</a>
 						<a href="/presidents" onclick={() => (menuOpen = false)} class={tileClass}>Leaders</a>
-						<a href="/support" onclick={() => (menuOpen = false)} class={tileClass}>Support</a>
 						<a href="/compare" onclick={() => (menuOpen = false)} class={tileClass}>Compare</a>
 						<a href="/ballot" onclick={() => (menuOpen = false)} class={tileClass}>Ballot</a>
 						<a href="/education" onclick={() => (menuOpen = false)} class={tileClass}>Learn</a>

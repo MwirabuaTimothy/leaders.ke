@@ -36,7 +36,6 @@
 
 	const PLATFORM: Item[] = [
 		{ label: 'All Leaders', sub: 'Platform', path: '/presidents' },
-		{ label: 'Support the register', sub: 'Platform', path: '/support' },
 		{ label: 'Compare Leaders', sub: 'Platform', path: '/compare' },
 		{ label: '2027 Vote Simulator', sub: 'Platform', path: '/ballot' },
 		{ label: 'Parties, Alliances & Movements', sub: 'Platform', path: '/parties' },
