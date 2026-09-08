@@ -146,6 +146,7 @@
 	const buyers = [
 		{
 			key: 'civic',
+			blurb: 'A populated Kenyan accountability register: 1,478 leaders across every elective seat, a news pipeline that keeps the record current, and the search position that brings citizens to it. Built, running, and looking for a custodian.',
 			pill: 'For Civic Tech',
 			chooser: 'A civic or accountability organisation',
 			audience: 'For civic technology and accountability organisations',
@@ -176,6 +177,7 @@
 		},
 		{
 			key: 'pollster',
+			blurb: 'A continuously running ward-level instrument: practice ballots across all six elective levels, mapped to all 47 counties, collected privately and at no cost per response.',
 			pill: 'For Pollsters',
 			chooser: 'A pollster or research firm',
 			audience: 'For pollsters and research firms',
@@ -207,6 +209,7 @@
 		},
 		{
 			key: 'politician',
+			blurb: 'The address voters already know how to spell, with ward-level targeting, SMS broadcast and M-Pesa fundraising behind it, and an audience that arrives without advertising.',
 			pill: 'For Campaigns',
 			chooser: 'An aspirant or a campaign',
 			audience: 'For an aspirant or a campaign',
@@ -237,6 +240,7 @@
 		},
 		{
 			key: 'funder',
+			blurb: 'A Kenyan civic register that is already built, already indexed and already used. What it needs is an operator and a transfer, not another eighteen-month programme grant.',
 			pill: 'For Funders',
 			chooser: 'A funder or democracy programme',
 			audience: 'For funders and democracy programmes',
@@ -267,6 +271,7 @@
 		},
 		{
 			key: 'media',
+			blurb: 'A finished election desk: 1,478 leader profiles, every elective seat, a daily monitoring feed and 3,216 indexed pages, on a domain nobody has to be taught or spell out on air.',
 			pill: 'For Media',
 			chooser: 'A media house or newsroom',
 			audience: 'For media houses and newsrooms',
@@ -352,10 +357,9 @@ below is written five ways and only one of them is worth a visitor's time. -->
 			<h1 class="mt-3 text-4xl font-bold tracking-tight text-heading sm:text-5xl lg:text-6xl">
 				vote.ke is for sale
 			</h1>
-			<p class="mt-5 text-lg leading-relaxed text-muted">
-				Kenya's civic data platform, the domain that names it, and the audience that already found
-				it. Populated, indexed, and built for every election season Kenya will ever hold, not just
-				the next one.
+			<p class="mt-5 max-w-2xl text-lg leading-relaxed text-muted">
+				{selected?.blurb ??
+					"Kenya's civic register, the domain that names it, and the audience that already found it."}
 			</p>
 			<div class="mt-7 flex flex-wrap items-center gap-4">
 				<a
