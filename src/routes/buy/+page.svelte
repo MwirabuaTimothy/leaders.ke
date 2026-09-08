@@ -597,8 +597,8 @@ below is written five ways and only one of them is worth a visitor's time. -->
 	<section class="mt-16 border-t border-border pt-10">
 		<h2 class="text-2xl font-bold text-heading sm:text-3xl lg:text-4xl">What it cost to build</h2>
 		<p class="mt-3 max-w-4xl text-lg leading-relaxed text-muted">
-			429 commits between 4 July and 7 September 2026, across 1,402 files, running in production.
-			Here is everything that shipped.
+			Over 1 million lines of code across 1,402 files, running in production.
+			Here is everything that we shipped.
 		</p>
 
 		<div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
