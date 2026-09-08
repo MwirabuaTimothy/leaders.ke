@@ -205,11 +205,11 @@
 		class="mt-6 flex flex-col justify-between gap-6 rounded-2xl border-2 border-primary bg-surface p-8 lg:flex-row lg:items-center"
 	>
 		<div class="max-w-3xl">
-			<h2 class="text-xl font-bold text-heading sm:text-2xl">vote.ke is available</h2>
+			<h2 class="text-xl font-bold text-heading sm:text-2xl">We are selling vote.ke</h2>
 			<p class="mt-3 text-base leading-relaxed text-muted">
 				The register was built voluntarily, and it now needs an owner who can carry it through 2027
-				and the cycles after it. The domain, the data, the platform and the audience are available
-				together to a civic organisation, a funder, a research firm, a newsroom, or a leader who
+				and the cycles after it. We are selling the domain, the data, the platform and the audience
+				together, to a civic organisation, a funder, a research firm, a newsroom, or a leader who
 				wants to fund Kenya's civic infrastructure properly.
 			</p>
 		</div>
