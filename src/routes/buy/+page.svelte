@@ -1,9 +1,9 @@
 <script lang="ts">
-	// Acquisition page. The asset is four things (domain, data, engine, audience)
-	// and three very different buyers want different combinations, so the page is
-	// structured by buyer rather than by feature. Each buyer block runs the same
-	// shape: audience label, thesis, argument beside a pull-quote, then the four
-	// reasons as a full-width card row.
+	// Acquisition page. The asset is five things (domain, data, engine, audience,
+	// and a year of support) and five very different buyers want different parts of
+	// it, so the page asks who is visiting and writes itself for them. Each pitch
+	// runs the same shape: audience label, thesis, argument beside a pull-quote,
+	// then four reasons as a card row.
 	import Countdown from '$lib/components/Countdown.svelte';
 	import { replaceState } from '$app/navigation';
 	import { page } from '$app/state';
@@ -407,30 +407,16 @@ below is written five ways and only one of them is worth a visitor's time. -->
 			</div>
 		</div>
 
-		<aside class="rounded-2xl border-2 border-primary bg-surface-2 p-6 lg:col-span-2">
-			<p class="text-xs font-semibold tracking-[0.18em] text-primary uppercase">
-				Included: twelve months of me
+		<aside class="flex flex-col justify-between gap-4 rounded-2xl border-2 border-primary bg-surface-2 p-6 text-center lg:col-span-2">
+			<p class="py-4 text-sm font-semibold tracking-widest text-heading uppercase">
+				Countdown to August 10, 2027
 			</p>
-			<h2 class="mt-2 text-lg leading-snug font-bold text-heading">
-				{selected?.yearTitle ?? 'The first year is not your problem'}
-			</h2>
-			<ul class="mt-4 space-y-2.5">
-				{#each selected?.year ?? ['Maintenance, hosting and the daily news engine, for twelve months.', 'Handover and training for your team.', 'Advisory on what to build next.'] as line (line)}
-					<li class="flex gap-2.5 text-sm leading-relaxed text-muted">
-						<span aria-hidden="true" class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary"
-						></span>
-						<span>{line}</span>
-					</li>
-				{/each}
-			</ul>
-			<p class="mt-4 border-t border-border pt-4 text-xs leading-relaxed text-muted">
-				The code, the data and the domain transfer on day one. The year of support is what makes
-				them usable, and it is the part nobody else can sell you.
-			</p>
-			<div class="mt-4 border-t border-border pt-4 text-center">
-				<p class="text-xs font-semibold tracking-wide text-muted uppercase">Countdown to the vote</p>
-				<div class="mt-2"><Countdown /></div>
+			<div class="w-full border-y border-border py-4">
+				<Countdown />
 			</div>
+			<p class="py-4 text-sm font-semibold tracking-widest text-heading uppercase">
+				Included: 12 months of support
+			</p>
 		</aside>
 	</header>
 
@@ -449,9 +435,9 @@ below is written five ways and only one of them is worth a visitor's time. -->
 		</dl>
 	</section>
 
-	<!-- ── Four assets: four across ────────────────────────────── -->
+	<!-- ── Five assets: four cards, then the support year ──────── -->
 	<section class="mt-14">
-		<h2 class="text-2xl font-bold text-heading sm:text-3xl">Four assets, sold together</h2>
+		<h2 class="text-2xl font-bold text-heading sm:text-3xl">Five assets, sold together</h2>
 		<div class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
 			{#each included as i (i.t)}
 				<div class="flex flex-col rounded-2xl border border-border bg-surface-2 p-6">
@@ -459,6 +445,27 @@ below is written five ways and only one of them is worth a visitor's time. -->
 					<p class="mt-2.5 text-sm leading-relaxed text-muted">{i.d}</p>
 				</div>
 			{/each}
+		</div>
+		<div class="mt-5 flex flex-col rounded-2xl border border-border bg-surface-2 p-6">
+			<p class="text-xs font-semibold tracking-[0.18em] text-primary uppercase">
+				12 Months of Support, Hosting and Handover
+			</p>
+			<h3 class="mt-2 text-lg leading-snug font-bold text-heading">
+				{selected?.yearTitle ?? 'The first year is not your problem'}
+			</h3>
+			<ul class="mt-4 space-y-2.5">
+				{#each selected?.year ?? ['Maintenance, hosting and the daily news engine, for twelve months.', 'Handover and training for your team.', 'Advisory on what to build next.'] as line (line)}
+					<li class="flex gap-2.5 text-sm leading-relaxed text-muted">
+						<span aria-hidden="true" class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary"
+						></span>
+						<span>{line}</span>
+					</li>
+				{/each}
+			</ul>
+			<p class="mt-4 border-t border-border pt-4 text-xs leading-relaxed text-muted">
+				The code, the data and the domain transfer on day one. The year of support is what makes
+				them usable, and it is the part nobody else can sell you.
+			</p>
 		</div>
 	</section>
 
@@ -550,17 +557,19 @@ below is written five ways and only one of them is worth a visitor's time. -->
 		</div>
 
 		<!-- Urgency, reframed -->
-		<div class="mt-9 grid gap-6 border-t border-border pt-8 lg:grid-cols-3">
+		<div class="mt-9 border-t border-border pt-8">
 			<h3 class="text-xl font-bold text-heading sm:text-2xl">So why buy now</h3>
-			<p class="text-base leading-relaxed text-muted">
-				Because the asset is permanent and the price is not. Demand for it spikes into every
-				election and everyone who wants it will want it at the same time. Buying between cycles is
-				the cheapest this will ever be.
-			</p>
-			<p class="text-lg leading-snug font-semibold text-heading">
-				Buying early buys the one thing an election cannot give you back: time to make it yours
-				before it matters.
-			</p>
+			<div class="mt-4 grid gap-6 lg:grid-cols-2">
+				<p class="text-base leading-relaxed text-muted">
+					Because the asset is permanent and the price is not. Demand for it spikes into every
+					election and everyone who wants it will want it at the same time. Buying between cycles
+					is the cheapest this will ever be.
+				</p>
+				<p class="text-lg leading-snug font-semibold text-heading">
+					Buying early buys the one thing an election cannot give you back: time to make it yours
+					before it matters.
+				</p>
+			</div>
 		</div>
 	</section>
 
@@ -705,12 +714,11 @@ below is written five ways and only one of them is worth a visitor's time. -->
 
 			<aside class="flex flex-col justify-center items-center text-center rounded-2xl border-l-4 border-primary bg-surface-2 px-6 py-7">
 				<p class="text-xs font-semibold tracking-[0.18em] text-muted uppercase">Minimum projected revenue</p>
-				<p class="mt-3 text-3xl font-bold tracking-tight text-heading lg:text-4xl">
+				<p class="my-4 text-3xl font-bold tracking-tight text-heading lg:text-4xl">
 					KES {kes(cycle(500))} 
 				</p>
-				<span class="mt-2 text-xs text-muted">(For 2027 cycle)</span>
 				<p class="mt-4 text-sm leading-relaxed text-muted">
-					You need only 500 aspirants on the blended price of KES 6,875 a month, for twelve months.
+					You need only 500 aspirants on the blended price of KES 6,875 a month, for <strong class="font-bold text-heading">twelve months.</strong>
 					500 out of 25,000. That is one in fifty.
 				</p>
 			</aside>
@@ -803,7 +811,7 @@ below is written five ways and only one of them is worth a visitor's time. -->
 		<div class="max-w-2xl">
 			<h2 class="text-2xl font-bold text-heading sm:text-3xl">Let us talk</h2>
 			<p class="mt-3 text-base leading-relaxed text-muted">
-				Tell us which of the four assets matter to you and we will put together the relevant
+				Tell us which of the five assets matter to you and we will put together the relevant
 				numbers: traffic history, the data schema, the codebase, and what a transfer would involve.
 			</p>
 		</div>
