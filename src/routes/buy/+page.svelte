@@ -122,31 +122,31 @@
 
 	// The pitch is written five different ways and only one of them is useful to
 	// any given reader, so the page asks who is visiting before showing one. The
-	// answer lives in ?visitor= so outreach emails can link straight to it.
+	// answer lives in ?for= so outreach emails can link straight to a variant.
 	const KEYS = ['civic', 'funder', 'pollster', 'media', 'politician'];
-	const initial = page.url.searchParams.get('visitor') ?? '';
-	let visitor = $state(KEYS.includes(initial) ? initial : '');
+	const initial = page.url.searchParams.get('for') ?? '';
+	let picked = $state(KEYS.includes(initial) ? initial : '');
 	let dialogEl = $state<HTMLDialogElement | null>(null);
-	const selected = $derived(buyers.find((b) => b.key === visitor));
+	let open = $state(false);
+	const selected = $derived(buyers.find((b) => b.key === picked));
 
 	$effect(() => {
 		if (!dialogEl) return;
-		if (visitor) dialogEl.close();
-		else if (!dialogEl.open) dialogEl.showModal();
+		const shouldOpen = open || !picked;
+		if (shouldOpen && !dialogEl.open) dialogEl.showModal();
+		else if (!shouldOpen && dialogEl.open) dialogEl.close();
 	});
 
 	function choose(k: string) {
-		visitor = k;
-		replaceState(`?visitor=${k}`, {});
-	}
-	function change() {
-		visitor = '';
-		replaceState(page.url.pathname, {});
+		picked = k;
+		open = false;
+		replaceState(`?for=${k}`, {});
 	}
 
 	const buyers = [
 		{
 			key: 'civic',
+			pill: 'For Civic Tech',
 			chooser: 'A civic or accountability organisation',
 			audience: 'For civic technology and accountability organisations',
 			thesis: 'Skip the eighteen months you would otherwise spend building the boring half',
@@ -176,6 +176,7 @@
 		},
 		{
 			key: 'pollster',
+			pill: 'For Pollsters',
 			chooser: 'A pollster or research firm',
 			audience: 'For pollsters and research firms',
 			thesis:
@@ -206,6 +207,7 @@
 		},
 		{
 			key: 'politician',
+			pill: 'For Campaigns',
 			chooser: 'An aspirant or a campaign',
 			audience: 'For an aspirant or a campaign',
 			thesis: 'Own the place where voters go to check on you',
@@ -235,6 +237,7 @@
 		},
 		{
 			key: 'funder',
+			pill: 'For Funders',
 			chooser: 'A funder or democracy programme',
 			audience: 'For funders and democracy programmes',
 			thesis: 'Fund a handover, not another eighteen-month build',
@@ -264,6 +267,7 @@
 		},
 		{
 			key: 'media',
+			pill: 'For Media',
 			chooser: 'A media house or newsroom',
 			audience: 'For media houses and newsrooms',
 			thesis: 'Your 2027 election desk, already shipped',
@@ -307,18 +311,17 @@ below is written five ways and only one of them is worth a visitor's time. -->
 <dialog
 	bind:this={dialogEl}
 	class="m-auto w-[min(46rem,92vw)] rounded-2xl border border-border bg-surface p-0 text-heading backdrop:bg-black/60 backdrop:backdrop-blur-sm"
-	oncancel={(e) => e.preventDefault()}
+	oncancel={(e) => {
+		if (!picked) e.preventDefault();
+	}}
+	onclose={() => (open = false)}
 >
-	<div class="p-7 sm:p-9">
+	<div class="p-4 sm:p-6">
 		<p class="text-xs font-semibold tracking-[0.2em] text-primary uppercase">Before we start</p>
 		<h2 class="mt-3 text-2xl font-bold tracking-tight text-heading sm:text-3xl">
-			Which of these are you?
+			Pick your best description
 		</h2>
-		<p class="mt-2 text-sm leading-relaxed text-muted">
-			vote.ke is worth something different to each of you. Pick one and we will show you only the
-			part that matters.
-		</p>
-		<div class="mt-6 grid gap-3 sm:grid-cols-2">
+		<div class="mt-6 flex flex-col gap-2">
 			{#each buyers as b (b.key)}
 				<button
 					type="button"
@@ -337,7 +340,15 @@ below is written five ways and only one of them is worth a visitor's time. -->
 	<!-- ── Hero: argument left, contents manifest right ────────── -->
 	<header class="grid gap-8 border-b border-border pb-10 lg:grid-cols-5">
 		<div class="lg:col-span-3">
-			<p class="text-xs font-semibold tracking-[0.2em] text-primary uppercase">Acquisition</p>
+			<button
+				type="button"
+				onclick={() => (open = true)}
+				title="Change who this page is written for"
+				class="inline-flex items-center gap-2 rounded-full border border-primary bg-primary/10 px-4 py-1.5 text-xs font-semibold tracking-[0.12em] text-primary uppercase transition hover:bg-primary hover:text-on-primary"
+			>
+				{selected?.pill ?? 'Acquisition'}
+				<span aria-hidden="true" class="text-[0.9em] opacity-70">&#9662;</span>
+			</button>
 			<h1 class="mt-3 text-4xl font-bold tracking-tight text-heading sm:text-5xl lg:text-6xl">
 				vote.ke is for sale
 			</h1>
@@ -405,18 +416,9 @@ below is written five ways and only one of them is worth a visitor's time. -->
 	<!-- ── The pitch, written for whoever said they were visiting ── -->
 	{#if selected}
 		<section class="mt-16 border-t border-border pt-10">
-			<div class="flex flex-wrap items-center justify-between gap-3">
-				<h2 class="text-2xl font-bold tracking-tight text-primary sm:text-3xl lg:text-4xl">
-					{selected.audience}
-				</h2>
-				<button
-					type="button"
-					onclick={change}
-					class="shrink-0 rounded-full border border-border px-4 py-1.5 text-xs font-semibold text-muted transition hover:border-primary hover:text-primary"
-				>
-					Not you? Change
-				</button>
-			</div>
+			<h2 class="text-2xl font-bold tracking-tight text-primary sm:text-3xl lg:text-4xl">
+				{selected.audience}
+			</h2>
 			<p class="mt-3 max-w-4xl text-xl font-semibold text-heading sm:text-2xl">{selected.thesis}</p>
 
 			<div class="mt-7 grid gap-6 lg:grid-cols-3">
