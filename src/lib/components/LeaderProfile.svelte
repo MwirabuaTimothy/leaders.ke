@@ -237,7 +237,20 @@
 							{#each data.news as item (item.id)}
 								<article class="border-b border-border pb-4 last:border-b-0 last:pb-0">
 									<div class="flex flex-wrap items-baseline justify-between gap-2">
-										<h3 class="text-sm font-semibold text-heading">{item.title}</h3>
+										<h3 class="text-sm font-semibold text-heading">
+											{#if item.href}
+												<a
+													href={item.href}
+													target={item.external ? '_blank' : null}
+													rel={item.external ? 'noopener' : null}
+													class="hover:text-primary hover:underline"
+												>
+													{item.title}{item.external ? ' ↗' : ''}
+												</a>
+											{:else}
+												{item.title}
+											{/if}
+										</h3>
 										<span class="text-xs text-muted"
 											>{dateFmt.format(new Date(item.createdAt))}</span
 										>

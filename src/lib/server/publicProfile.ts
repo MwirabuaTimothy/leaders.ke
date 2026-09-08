@@ -134,7 +134,7 @@ export async function loadPublicProfileData(
 		// A taste of the coverage, not an archive: the profile shows the newest
 		// few and links out to the full, filterable feed (/?mention=<slug>).
 		db
-			.select({ id: posts.id, title: posts.title, summary: posts.aiSummary, body: posts.body, createdAt: posts.createdAt })
+			.select({ id: posts.id, title: posts.title, summary: posts.aiSummary, body: posts.body, slug: posts.slug, sourceUrl: posts.sourceUrl, createdAt: posts.createdAt })
 			.from(tags)
 			.innerJoin(posts, eq(tags.postId, posts.id))
 			.where(and(eq(tags.subjectUserId, row.users.id), isNull(tags.deletedAt), isNull(posts.deletedAt)))
@@ -306,7 +306,16 @@ export async function loadPublicProfileData(
 		signedIn: !!opts.viewerId,
 		// Entities decoded on the way out: older ingested mentions carry literal
 		// `&nbsp;`/`&#039;` from before the ingester decoded fully.
-		news: mentionRows.map((m) => ({ id: m.id, title: decodeHtmlEntities(m.title), summary: decodeHtmlEntities(m.summary ?? m.body.slice(0, 160)), createdAt: m.createdAt.toISOString() })),
+		news: mentionRows.map((m) => ({
+			id: m.id,
+			title: decodeHtmlEntities(m.title),
+			summary: decodeHtmlEntities(m.summary ?? m.body.slice(0, 160)),
+			// Same rule the homepage feed uses: a post we published has a slug and
+			// opens in place; a scraped mention has none and links out to the source.
+			href: m.slug ? `/news/${m.slug}` : m.sourceUrl,
+			external: !m.slug && !!m.sourceUrl,
+			createdAt: m.createdAt.toISOString()
+		})),
 		breadcrumb: {
 			positionTitle: leadPosition.title,
 			regionLabel: leadPosition.boundary === 'Country' ? null : leadPosition.region,
