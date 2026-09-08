@@ -146,6 +146,13 @@
 	const buyers = [
 		{
 			key: 'civic',
+			yearTitle: 'Your team learns it while it runs',
+			year: [
+				'The register keeps publishing from day one. No dark period while your engineers read the code.',
+				'Handover at your people\'s pace, in sessions, not one afternoon and a document.',
+				'Hosting, patching and the daily ingestion stay mine for twelve months.',
+				'An honest view on which unbuilt feature is worth your next grant, and which is not.'
+			],
 			blurb: 'A populated Kenyan accountability register: 1,478 leaders across every elective seat, a news pipeline that keeps the record current, and the search position that brings citizens to it. Built, running, and looking for a custodian.',
 			pill: 'For Civic Tech',
 			chooser: 'A civic or accountability organisation',
@@ -177,6 +184,13 @@
 		},
 		{
 			key: 'pollster',
+			yearTitle: 'Your analysts get the model, not just a database dump',
+			year: [
+				'The schema, the ward mapping and the ballot instrument explained to your team in their terms.',
+				'Changes to how responses are captured and exported, tuned to your sampling frame.',
+				'Hosting, patching and the daily ingestion stay mine for twelve months.',
+				'A year to decide what you need before you hire an engineer to build it.'
+			],
 			blurb: 'A continuously running ward-level instrument: practice ballots across all six elective levels, mapped to all 47 counties, collected privately and at no cost per response.',
 			pill: 'For Pollsters',
 			chooser: 'A pollster or research firm',
@@ -209,6 +223,13 @@
 		},
 		{
 			key: 'politician',
+			yearTitle: 'Nobody on your campaign becomes a webmaster',
+			year: [
+				'Twelve months of hosting, patching and the daily news engine, handled.',
+				'Changes made when you need them, in a year where waiting a fortnight is expensive.',
+				'Your team trained on broadcasts, pledges and fundraising, not handed a manual.',
+				'An honest answer on what the platform can and cannot do, before you promise it on a stage.'
+			],
 			blurb: 'The address voters already know how to spell, with ward-level targeting, SMS broadcast and M-Pesa fundraising behind it, and an audience that arrives without advertising.',
 			pill: 'For Campaigns',
 			chooser: 'An aspirant or a campaign',
@@ -240,6 +261,13 @@
 		},
 		{
 			key: 'funder',
+			yearTitle: 'The grant does not fund a stalled handover',
+			year: [
+				'Twelve months of the person who built it, included in the price rather than a follow-on cost.',
+				'The register keeps running through the transition, so your reporting period has real numbers in it.',
+				'The operator you fund is trained, so year two does not need another grant to keep it alive.',
+				'An honest view on what should and should not be built next.'
+			],
 			blurb: 'A Kenyan civic register that is already built, already indexed and already used. What it needs is an operator and a transfer, not another eighteen-month programme grant.',
 			pill: 'For Funders',
 			chooser: 'A funder or democracy programme',
@@ -271,6 +299,13 @@
 		},
 		{
 			key: 'media',
+			yearTitle: 'Someone answers at 11pm on election night',
+			year: [
+				'Twelve months of hosting, patching and daily ingestion, run by the person who wrote it.',
+				'Load and readiness work before the nights that actually matter.',
+				'Handover to your digital team at their pace, not in a single afternoon.',
+				'Advice on the results feed and the live pages before you commit budget to either.'
+			],
 			blurb: 'A finished election desk: 1,478 leader profiles, every elective seat, a daily monitoring feed and 3,216 indexed pages, on a domain nobody has to be taught or spell out on air.',
 			pill: 'For Media',
 			chooser: 'A media house or newsroom',
@@ -372,16 +407,26 @@ below is written five ways and only one of them is worth a visitor's time. -->
 			</div>
 		</div>
 
-		<aside class="rounded-2xl border border-border bg-surface-2 p-6 lg:col-span-2">
-			<h2 class="text-xs font-semibold tracking-[0.18em] text-muted uppercase">In the sale</h2>
-			<ul class="mt-4 divide-y divide-border">
-				{#each included as i (i.t)}
-					<li class="flex items-baseline gap-3 py-2.5">
-						<span class="text-primary">&#9679;</span>
-						<span class="text-sm font-semibold text-heading">{i.t}</span>
+		<aside class="rounded-2xl border-2 border-primary bg-surface-2 p-6 lg:col-span-2">
+			<p class="text-xs font-semibold tracking-[0.18em] text-primary uppercase">
+				Included: twelve months of me
+			</p>
+			<h2 class="mt-2 text-lg leading-snug font-bold text-heading">
+				{selected?.yearTitle ?? 'The first year is not your problem'}
+			</h2>
+			<ul class="mt-4 space-y-2.5">
+				{#each selected?.year ?? ['Maintenance, hosting and the daily news engine, for twelve months.', 'Handover and training for your team.', 'Advisory on what to build next.'] as line (line)}
+					<li class="flex gap-2.5 text-sm leading-relaxed text-muted">
+						<span aria-hidden="true" class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary"
+						></span>
+						<span>{line}</span>
 					</li>
 				{/each}
 			</ul>
+			<p class="mt-4 border-t border-border pt-4 text-xs leading-relaxed text-muted">
+				The code, the data and the domain transfer on day one. The year of support is what makes
+				them usable, and it is the part nobody else can sell you.
+			</p>
 			<div class="mt-4 border-t border-border pt-4 text-center">
 				<p class="text-xs font-semibold tracking-wide text-muted uppercase">Countdown to the vote</p>
 				<div class="mt-2"><Countdown /></div>
