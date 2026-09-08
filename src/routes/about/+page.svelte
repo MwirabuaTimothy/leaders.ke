@@ -200,6 +200,26 @@
 		</div>
 	</section>
 
+	<!-- ── Acquisition, placed where the story naturally leads ── -->
+	<section
+		class="mt-6 flex flex-col justify-between gap-6 rounded-2xl border-2 border-primary bg-surface p-8 lg:flex-row lg:items-center"
+	>
+		<div class="max-w-3xl">
+			<h2 class="text-xl font-bold text-heading sm:text-2xl">vote.ke is available</h2>
+			<p class="mt-3 text-base leading-relaxed text-muted">
+				The register was built voluntarily, and it now needs an owner who can carry it through 2027
+				and the cycles after it. The domain, the data, the platform and the audience are available
+				together to a civic organisation, a funder, a research firm, a newsroom, or a leader who
+				wants to fund Kenya's civic infrastructure properly.
+			</p>
+		</div>
+		<a
+			href="/buy"
+			class="shrink-0 rounded-full bg-primary px-7 py-3 text-sm font-semibold text-on-primary transition hover:opacity-90"
+			>See what is included</a
+		>
+	</section>
+
 	<!-- ── Three positions, three columns ──────────────────────── -->
 	<section class="mt-14 grid gap-8 border-t border-border pt-10 lg:grid-cols-3">
 		{#each stands as s (s.t)}
