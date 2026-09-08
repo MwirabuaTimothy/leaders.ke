@@ -5,6 +5,8 @@
 	// shape: audience label, thesis, argument beside a pull-quote, then the four
 	// reasons as a full-width card row.
 	import Countdown from '$lib/components/Countdown.svelte';
+	import { replaceState } from '$app/navigation';
+	import { page } from '$app/state';
 
 	const stats = [
 		{ n: '1,478', l: 'leader profiles' },
@@ -118,8 +120,34 @@
 	const USD = Math.round(ASK / 130 / 1000) * 1000;
 	const kes = (n: number) => n.toLocaleString('en-KE');
 
+	// The pitch is written five different ways and only one of them is useful to
+	// any given reader, so the page asks who is visiting before showing one. The
+	// answer lives in ?visitor= so outreach emails can link straight to it.
+	const KEYS = ['civic', 'funder', 'pollster', 'media', 'politician'];
+	const initial = page.url.searchParams.get('visitor') ?? '';
+	let visitor = $state(KEYS.includes(initial) ? initial : '');
+	let dialogEl = $state<HTMLDialogElement | null>(null);
+	const selected = $derived(buyers.find((b) => b.key === visitor));
+
+	$effect(() => {
+		if (!dialogEl) return;
+		if (visitor) dialogEl.close();
+		else if (!dialogEl.open) dialogEl.showModal();
+	});
+
+	function choose(k: string) {
+		visitor = k;
+		replaceState(`?visitor=${k}`, {});
+	}
+	function change() {
+		visitor = '';
+		replaceState(page.url.pathname, {});
+	}
+
 	const buyers = [
 		{
+			key: 'civic',
+			chooser: 'A civic or accountability organisation',
 			audience: 'For civic technology and accountability organisations',
 			thesis: 'Skip the eighteen months you would otherwise spend building the boring half',
 			lead: [
@@ -147,6 +175,8 @@
 			]
 		},
 		{
+			key: 'pollster',
+			chooser: 'A pollster or research firm',
 			audience: 'For pollsters and research firms',
 			thesis:
 				'A standing panel of politically engaged Kenyans, and a sentiment instrument nobody else has',
@@ -175,6 +205,8 @@
 			]
 		},
 		{
+			key: 'politician',
+			chooser: 'An aspirant or a campaign',
 			audience: 'For an aspirant or a campaign',
 			thesis: 'Own the place where voters go to check on you',
 			lead: [
@@ -200,6 +232,64 @@
 					d: 'Independence is what makes the traffic worth having. Buying it and branding it destroys the thing you paid for.'
 				}
 			]
+		},
+		{
+			key: 'funder',
+			chooser: 'A funder or democracy programme',
+			audience: 'For funders and democracy programmes',
+			thesis: 'Fund a handover, not another eighteen-month build',
+			lead: [
+				'Every cycle you fund civic platforms that get built, get used for one season, and go quiet when the grant ends. The build consumes the budget and nobody funds the maintenance.',
+				'This one is already built and already running. What it needs is an operator and a modest transfer budget, which is a fraction of a programme grant.'
+			],
+			quote: 'The cheapest civic infrastructure you fund this cycle is the kind that already exists.',
+			points: [
+				{
+					t: 'The build is done, and paid for',
+					d: '429 commits, in production since July 2026. Nothing you grant would go on scaffolding, discovery or procurement.'
+				},
+				{
+					t: 'A credible custodian already exists',
+					d: 'Several Kenyan accountability organisations could operate this on day one. What none of them has is a line item for acquiring something that already works.'
+				},
+				{
+					t: 'Impact starts in month one',
+					d: 'No build phase. The register is live, populated and indexed on the day it transfers, so the first report covers real usage rather than milestones.'
+				},
+				{
+					t: 'Measurable from the start',
+					d: 'Traffic, indexed pages, leaders covered and daily ingestion volume are all instrumented already. The metrics exist before the grant does.'
+				}
+			]
+		},
+		{
+			key: 'media',
+			chooser: 'A media house or newsroom',
+			audience: 'For media houses and newsrooms',
+			thesis: 'Your 2027 election desk, already shipped',
+			lead: [
+				'In January your team will scope an election microsite. Every cycle it is scoped late, built in a hurry, and retired the month after the vote.',
+				'This one exists, populated and indexed, on a domain nobody has to be taught or spelled out on air.'
+			],
+			quote: 'Inherit a working product in January instead of scoping one.',
+			points: [
+				{
+					t: 'The archive you would otherwise rebuild',
+					d: '1,478 leaders, 1,882 seats, 131 parties and the positions each has held. Your researchers stop starting from cuttings.'
+				},
+				{
+					t: 'A domain that works on air',
+					d: 'vote.ke survives being read aloud in a radio bulletin and printed on a lower third. No microsite URL you invent will do both.'
+				},
+				{
+					t: 'The monitoring desk is already running',
+					d: 'Daily ingestion across 1,163 leaders with tone classification. A live media-monitoring feed without hiring for one.'
+				},
+				{
+					t: '3,216 pages already indexed',
+					d: 'Election-night search traffic lands somewhere you own, rather than on a competitor who started earlier.'
+				}
+			]
 		}
 	];
 </script>
@@ -211,6 +301,37 @@
 		content="Kenya's civic data platform: 1,478 leader profiles, 3,216 indexed pages, a live news engine and the vote.ke domain. Available before the 2027 cycle."
 	/>
 </svelte:head>
+
+<!-- Asked once on arrival. Not dismissible without an answer: the whole page
+below is written five ways and only one of them is worth a visitor's time. -->
+<dialog
+	bind:this={dialogEl}
+	class="m-auto w-[min(46rem,92vw)] rounded-2xl border border-border bg-surface p-0 text-heading backdrop:bg-black/60 backdrop:backdrop-blur-sm"
+	oncancel={(e) => e.preventDefault()}
+>
+	<div class="p-7 sm:p-9">
+		<p class="text-xs font-semibold tracking-[0.2em] text-primary uppercase">Before we start</p>
+		<h2 class="mt-3 text-2xl font-bold tracking-tight text-heading sm:text-3xl">
+			Which of these are you?
+		</h2>
+		<p class="mt-2 text-sm leading-relaxed text-muted">
+			vote.ke is worth something different to each of you. Pick one and we will show you only the
+			part that matters.
+		</p>
+		<div class="mt-6 grid gap-3 sm:grid-cols-2">
+			{#each buyers as b (b.key)}
+				<button
+					type="button"
+					onclick={() => choose(b.key)}
+					class="rounded-xl border border-border bg-surface-2 p-4 text-left transition hover:border-primary hover:bg-surface"
+				>
+					<span class="block text-sm font-bold text-heading">{b.chooser}</span>
+					<span class="mt-1 block text-xs leading-snug text-muted">{b.thesis}</span>
+				</button>
+			{/each}
+		</div>
+	</div>
+</dialog>
 
 <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6">
 	<!-- ── Hero: argument left, contents manifest right ────────── -->
@@ -281,38 +402,36 @@
 		</div>
 	</section>
 
-	<!-- ── The three buyers ────────────────────────────────────── -->
-	{#each buyers as b, idx (b.audience)}
+	<!-- ── The pitch, written for whoever said they were visiting ── -->
+	{#if selected}
 		<section class="mt-16 border-t border-border pt-10">
-			<h2 class="text-2xl font-bold tracking-tight text-primary sm:text-3xl lg:text-4xl">
-				{b.audience}
-			</h2>
-			<p class="mt-3 max-w-4xl text-xl font-semibold text-heading sm:text-2xl">{b.thesis}</p>
-
-			<!-- argument beside a pull-quote; the quote alternates side by section -->
-			<div class="mt-7 grid gap-6 lg:grid-cols-3">
-				<div
-					class="space-y-4 text-base leading-relaxed text-muted lg:col-span-2 {idx === 1
-						? 'lg:order-2'
-						: ''}"
+			<div class="flex flex-wrap items-center justify-between gap-3">
+				<h2 class="text-2xl font-bold tracking-tight text-primary sm:text-3xl lg:text-4xl">
+					{selected.audience}
+				</h2>
+				<button
+					type="button"
+					onclick={change}
+					class="shrink-0 rounded-full border border-border px-4 py-1.5 text-xs font-semibold text-muted transition hover:border-primary hover:text-primary"
 				>
-					{#each b.lead as para (para)}
+					Not you? Change
+				</button>
+			</div>
+			<p class="mt-3 max-w-4xl text-xl font-semibold text-heading sm:text-2xl">{selected.thesis}</p>
+
+			<div class="mt-7 grid gap-6 lg:grid-cols-3">
+				<div class="space-y-4 text-base leading-relaxed text-muted lg:col-span-2">
+					{#each selected.lead as para (para)}
 						<p>{para}</p>
 					{/each}
 				</div>
-				<aside
-					class="flex items-center rounded-2xl border-l-4 border-primary bg-surface-2 px-6 py-7 {idx ===
-					1
-						? 'lg:order-1'
-						: ''}"
-				>
-					<p class="text-lg leading-snug font-semibold text-heading">{b.quote}</p>
+				<aside class="flex items-center rounded-2xl border-l-4 border-primary bg-surface-2 px-6 py-7">
+					<p class="text-lg leading-snug font-semibold text-heading">{selected.quote}</p>
 				</aside>
 			</div>
 
-			<!-- the four reasons, four across -->
 			<div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-				{#each b.points as pt (pt.t)}
+				{#each selected.points as pt (pt.t)}
 					<div class="flex flex-col rounded-2xl border border-border bg-surface p-5">
 						<h3 class="text-sm font-bold text-heading">{pt.t}</h3>
 						<p class="mt-2 text-sm leading-relaxed text-muted">{pt.d}</p>
@@ -320,7 +439,7 @@
 				{/each}
 			</div>
 		</section>
-	{/each}
+	{/if}
 
 	<!-- ── Perpetual value, then urgency ───────────────────────── -->
 	<section class="mt-16 rounded-2xl border border-border bg-surface-2 p-8 sm:p-10">
