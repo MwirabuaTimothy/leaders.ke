@@ -10,6 +10,16 @@ import { payments, subscriptions } from '$lib/server/db/schema';
 import { createProfile, linkProfile, notifyAdminsOfNewProfile, notifyPayerOfPayment } from '$lib/server/onboard';
 import type { OnboardInput } from '$lib/server/onboard';
 
+/** A declined/timed-out charge on a `payments` row (subscription checkout or
+ * tier upgrade, both share this table): status-guarded so it only touches a
+ * still-pending row, mirroring donationFulfill's failDonation. */
+export async function failPayment(reference: string): Promise<void> {
+	await db
+		.update(payments)
+		.set({ status: 'failed' })
+		.where(and(eq(payments.providerReference, reference), eq(payments.status, 'pending')));
+}
+
 export type CheckoutMetadata = {
 	tier: string;
 	cycle: string;

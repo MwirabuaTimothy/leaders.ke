@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import { fulfillSubscriptionPayment } from '$lib/server/checkoutFulfill';
+import { failPayment, fulfillSubscriptionPayment } from '$lib/server/checkoutFulfill';
 import { confirmDonation, failDonation, isDonationReference } from '$lib/server/donationFulfill';
 import { fulfillUpgradePayment, isUpgradeReference } from '$lib/server/subscriptionUpgrade';
 import { methodFromChannel, verifyWebhookSignature } from '$lib/server/paystack';
@@ -35,9 +35,15 @@ export const POST: RequestHandler = async ({ request }) => {
 		} else {
 			await fulfillSubscriptionPayment(reference, verified);
 		}
-	} else if (event.event === 'charge.failed' && reference && isDonationReference(reference)) {
-		// Declined/timed-out STK prompt, surface it as failed on the ledger.
-		await failDonation(reference);
+	} else if (event.event === 'charge.failed' && reference) {
+		// Declined/timed-out/cancelled charge, surface it as failed rather than
+		// leaving the row pending forever. `payments` covers both `ps_` checkout
+		// and `up_` upgrade references, only donations get their own table.
+		if (isDonationReference(reference)) {
+			await failDonation(reference);
+		} else {
+			await failPayment(reference);
+		}
 	}
 
 	// Non-charge events are acknowledged so Paystack stops retrying them.
