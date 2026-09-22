@@ -115,7 +115,7 @@ export type InviteDetails = {
 
 /** Creates a fresh invite for this email, revoking any invite still open for the
  * same (person, role, email) first. One live link per invitee, and emails it
- * (dev: sendEmail logs the link to the console when no Postmark token is set).
+ * (dev: sendEmail logs the link to the console when no Brevo token is set).
  * Throws if: re-inviting the same (person, role, email) too soon/too often (spam
  * guard, mass mobilization to *unique* emails is never rate-limited), or the
  * person has hit their lifetime invite cap for their subscription tier. */

@@ -30,7 +30,7 @@ export function stripLinks(html: string): string {
 }
 
 /**
- * Sends a transactional email. With EMAIL_TOKEN set it posts to Postmark;
+ * Sends a transactional email. With EMAIL_TOKEN set it posts to Brevo;
  * otherwise (dev) it logs the message to the console so email flows stay testable
  * without a provider, copy the link from the terminal.
  */
@@ -43,17 +43,23 @@ export async function sendEmail({ to, subject, text, html }: Mail): Promise<void
 		return;
 	}
 
-	const res = await fetch('https://api.postmarkapp.com/email', {
+	const res = await fetch('https://api.brevo.com/v3/smtp/email', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
 			Accept: 'application/json',
-			'X-Postmark-Server-Token': token
+			'api-key': token
 		},
-		body: JSON.stringify({ From: from, To: to, Subject: subject, TextBody: text, ...(html ? { HtmlBody: html } : {}), MessageStream: 'outbound' })
+		body: JSON.stringify({
+			sender: { email: from },
+			to: [{ email: to }],
+			subject,
+			textContent: text,
+			...(html ? { htmlContent: html } : {})
+		})
 	});
 
 	if (!res.ok) {
-		throw new Error(`Postmark send failed (${res.status}): ${await res.text()}`);
+		throw new Error(`Brevo send failed (${res.status}): ${await res.text()}`);
 	}
 }

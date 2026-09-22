@@ -24,7 +24,7 @@ export const auth = betterAuth({
 		: {}),
 	emailAndPassword: {
 		enabled: true,
-		// Emails the reset link (via Postmark, or the console stub in dev). Powers /forgot-password.
+		// Emails the reset link (via Brevo, or the console stub in dev). Powers /forgot-password.
 		sendResetPassword: async ({ user, url }) => {
 			await sendEmail({
 				to: user.email,

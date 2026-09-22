@@ -17,7 +17,7 @@ export const actions: Actions = {
 		}
 
 		try {
-			// Emails a reset link once emailAndPassword.sendResetPassword + Postmark are wired.
+			// Emails a reset link once emailAndPassword.sendResetPassword + Brevo are wired.
 			await auth.api.requestPasswordReset({
 				body: { email, redirectTo: '/reset-password' },
 				headers: event.request.headers
