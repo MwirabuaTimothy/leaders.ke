@@ -100,6 +100,52 @@ body {
 	color: var(--text);
 }
 
+/* Phones: trims every text size a step down, headings more than body copy
+   (they're set with the same desktop-first text-3xl..7xl classes across the
+   site, so on a narrow screen they read oversized relative to body text). */
+@media (max-width: 640px) {
+	html {
+		font-size: 15px;
+	}
+
+	h1,
+	h2,
+	h3,
+	h4 {
+		letter-spacing: -0.01em;
+	}
+
+	.text-2xl {
+		font-size: 1.25rem;
+		line-height: 1.75rem;
+	}
+
+	.text-3xl {
+		font-size: 1.5rem;
+		line-height: 2rem;
+	}
+
+	.text-4xl {
+		font-size: 1.75rem;
+		line-height: 2.15rem;
+	}
+
+	.text-5xl {
+		font-size: 2rem;
+		line-height: 2.25rem;
+	}
+
+	.text-6xl {
+		font-size: 2.5rem;
+		line-height: 1.1;
+	}
+
+	.text-7xl {
+		font-size: 3rem;
+		line-height: 1.1;
+	}
+}
+
 h1,
 h2,
 h3,
